@@ -114,20 +114,24 @@ function pad(n, width) {
 		<div class="container-fluid" >
 			<div class="row">
 				<div class="col-xs-12">
-						<input name="calendarDay" type="text" id="day" class="day col-xs-2	qr" value="<%=request.getParameter("re_day")%>">
+						<input type="text" name="calendarTable" id="calendarTable" 
+							   class="calendarTable col-xs-2 qr" value="Table No.<%=request.getParameter("calendarTable")%>"> <!-- 팝업URI에서 추출한 Value -->
+						<input type="text" name="calendarDay" id="day" class="day col-xs-1	qr" value="<%=request.getParameter("re_day")%>">
 						<input type="text" class="hh col-xs-1 qr" value="" placeholder="Hour">
 						<input type="text" class="mm col-xs-2 qr" value="" placeholder="Minute">
 						<input type="text" class="step col-xs-1 qr" value="" placeholder="step">
-						<input type="text" class="rn col-xs-2 qr" value="" placeholder="Amount">
-						<button type="button" class="col-xs-2 qr" onclick="javascript:schedule_time();">Input</button>
+						<input type="text" class="rn col-xs-1 qr" value="" placeholder="Amount">
+						
+						<button type="button" class="col-xs-2 qr" style=""onclick="javascript:schedule_time();">Input</button>
 				</div>
 				<div class="col-xs-12" style="margin-top:5px; padding-left: 13%">
 					<div>
-						<c:forEach var="i" begin="0" end="39" varStatus="st">
+						<c:forEach var="i" begin="0" end="27" varStatus="st">
 							<input name="calendarTime" type="submit" id="time" class="record${st.index } record"  value=""/>
 						</c:forEach>
 					</div>	
 				</div>
+				
 			</div>
 		</div>
 	</form>

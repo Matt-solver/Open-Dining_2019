@@ -59,8 +59,7 @@
 <body onload="init();$('#inputpay').hide();$('#pay').hide();
 			$('.table_1').hide();$('.table_2').hide();$('.table_3').hide();
 			$('.table_4').hide();$('.table_5').hide();$('.table_6').hide();
-			$('.table_7').hide();$('.table_8').hide();$('.table_9').hide();
-			$('.table_10').hide();" >
+			$('.table_7').hide();$('.table_8').hide();$('.table_9').hide();" >
 <%
 
 	//	고객 접속확인
@@ -85,7 +84,6 @@
 				     style="max-width:100%; width:100%; 
 							font-family: 'Bungee Hairline', cursive;">
 					<span class="col-xs-10 " >
-							Welcome to my Store!! ${firstName} ${lastName} Would you like to select menu?
 					</span>
 					<span class="col-xs-2">
 						<%@ include file="header/printClock.jsp" %>
@@ -214,8 +212,8 @@
 						   left:10%; width: 100%; height: 65%" data-duration="800" />
 				<br><br><br><br>
 				
-				<!-- 	no.1 Table book up 	-->
-						
+				<!-- 	Select table numbers 	-->
+					<div>
 						<input type="button" name="t_index" class="table tb1 t1 zoomButton" 
 								data-type="next" data-root=".demo" value="1" onclick="">					
 		
@@ -242,8 +240,9 @@
 	
 						<input type="button" name="t_index" class="table tb3 t9 zoomButton" 
 								data-type="next" data-root=".demo" value="9">
+					</div>	
 														
-							<br/>
+					<br/>
 													
 			</div>
 	
@@ -287,20 +286,39 @@
 		    </div>	
 		    	<br/>		    	
 				
-				<%
+	<%
 		if(email == null ){
-			
-		} else {
-		%>
+	%>
+	<%		
+		} else if(email.equals(admin)){
+	%>
+			<!-- 	TimePicker View for Administor		-->
+		<div class="table_1">	
 		
-		<div class="table_1">				
+<%-- 			<c:forEach var="item" begin="0" items="${fn:split('today|manana|third|fourth|fifth|sixth', '|') }" end="8" varStatus="status">
+				<div align="left"  class="tp timepicker${status.index }"  style="padding-left: 13%">
+				
+		 			<c:forEach var="j" begin="0" items="${calender_0}" end="15" varStatus="st">
+			 			
+
+						<span class="" style="text-align: center;">	
+							<input type="button" id="" class="time time_admin time-sh"
+								value="${j.calendarTime} " 
+								onclick="deleteCalendar('${j.calendarTime}', '${item }')">	
+						</span>			
+						
+					</c:forEach>	
+							
+				</div>
+			</c:forEach> --%>
+			
 			<!-- Calendar for Table No.1 -->
 			<div align="left"  class="tp timepicker0"  style="padding-left: 13%">
 	 			<c:forEach var="j" begin="0" items="${t1_today_calendar }" end="15" varStatus="st">
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t1').val(), '${j.calendarTime}', 'today')">	
 					</span>			
 				</c:forEach>			
 			</div>
@@ -309,7 +327,7 @@
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t1').val(), '${j.calendarTime}', 'manana')">	
 					</span>			
 				</c:forEach>			
 			</div>					  
@@ -318,7 +336,7 @@
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t1').val(), '${j.calendarTime}', 'third')">	
 					</span>			
 				</c:forEach>			
 			</div>	
@@ -327,7 +345,7 @@
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t1').val(), '${j.calendarTime}', 'fourth')">	
 					</span>			
 				</c:forEach>			
 			</div>				
@@ -336,7 +354,7 @@
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t1').val(), '${j.calendarTime}', 'fifth')">	
 					</span>			
 				</c:forEach>			
 			</div>	
@@ -345,10 +363,20 @@
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t1').val(), '${j.calendarTime}', 'sixth')">	
 					</span>			
 				</c:forEach>			
 			</div>	
+										
+				<!-- 	Add Canlendar	-->
+				<div>
+					<button type="button" id="" 
+							class="btn btn-default" 
+							style="position:relative; font-size: 100%; margin: 5px 0 5px 0;"
+							onclick="javascript:addCalendar($('.t1').val(), $('.re_day').val())">
+						Add Canlendar
+					</button>
+				</div>
 		</div>
 		
 		<!-- Calendar for Table No.2 -->
@@ -358,7 +386,7 @@
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t2').val(), '${j.calendarTime}', 'today')">	
 					</span>			
 				</c:forEach>			
 			</div>
@@ -367,7 +395,7 @@
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t2').val(), '${j.calendarTime}', 'manana')">	
 					</span>			
 				</c:forEach>			
 			</div>					  
@@ -376,7 +404,7 @@
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t2').val(), '${j.calendarTime}', 'third')">	
 					</span>			
 				</c:forEach>			
 			</div>	
@@ -385,7 +413,7 @@
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t2').val(), '${j.calendarTime}', 'fourth')">	
 					</span>			
 				</c:forEach>			
 			</div>				
@@ -394,7 +422,7 @@
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t2').val(), '${j.calendarTime}', 'fifth')">	
 					</span>			
 				</c:forEach>			
 			</div>	
@@ -403,10 +431,20 @@
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t2').val(), '${j.calendarTime}', 'sixth')">	
 					</span>			
 				</c:forEach>			
 			</div>		  
+			
+							<!-- 	Add Canlendar	-->
+				<div>
+					<button type="button" id="" 
+							class="btn btn-default" 
+							style="position:relative; font-size: 100%; margin: 5px 0 5px 0;"
+							onclick="javascript:addCalendar($('.t2').val(), $('.re_day').val())">
+						Add Canlendar
+					</button>
+			</div>
 		</div>
 		
 		<div class="table_3">
@@ -416,7 +454,7 @@
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t3').val(), '${j.calendarTime}', 'today')">	
 					</span>			
 				</c:forEach>			
 			</div>
@@ -425,7 +463,7 @@
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t3').val(), '${j.calendarTime}', 'manana')">	
 					</span>			
 				</c:forEach>			
 			</div>					  
@@ -434,7 +472,7 @@
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t3').val(), '${j.calendarTime}', 'third')">	
 					</span>			
 				</c:forEach>			
 			</div>	
@@ -443,7 +481,7 @@
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t3').val(), '${j.calendarTime}', 'fourth')">	
 					</span>			
 				</c:forEach>			
 			</div>				
@@ -452,7 +490,7 @@
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t3').val(), '${j.calendarTime}', 'fifth')">	
 					</span>			
 				</c:forEach>			
 			</div>	
@@ -461,10 +499,20 @@
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t3').val(), '${j.calendarTime}', 'sixth')">	
 					</span>			
 				</c:forEach>			
 			</div>		  
+			
+							<!-- 	Add Canlendar	-->
+				<div>
+					<button type="button" id="" 
+							class="btn btn-default" 
+							style="position:relative; font-size: 100%; margin: 5px 0 5px 0;"
+							onclick="javascript:addCalendar($('.t3').val(), $('.re_day').val())">
+						Add Canlendar
+					</button>
+			</div>
 		</div>	
 		
 		<div class="table_4">
@@ -474,7 +522,7 @@
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t4').val(), '${j.calendarTime}', 'today')">	
 					</span>			
 				</c:forEach>			
 			</div>
@@ -483,7 +531,7 @@
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t4').val(), '${j.calendarTime}', 'manana')">	
 					</span>			
 				</c:forEach>			
 			</div>					  
@@ -492,7 +540,7 @@
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t4').val(), '${j.calendarTime}', 'third')">	
 					</span>			
 				</c:forEach>			
 			</div>	
@@ -501,7 +549,7 @@
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t4').val(), '${j.calendarTime}', 'fourth')">	
 					</span>			
 				</c:forEach>			
 			</div>				
@@ -510,7 +558,7 @@
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t4').val(), '${j.calendarTime}', 'fifth')">	
 					</span>			
 				</c:forEach>			
 			</div>	
@@ -519,10 +567,20 @@
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t4').val(), '${j.calendarTime}', 'sixth')">	
 					</span>			
 				</c:forEach>			
 			</div>		  
+			
+							<!-- 	Add Canlendar	-->
+				<div>
+					<button type="button" id="" 
+							class="btn btn-default" 
+							style="position:relative; font-size: 100%; margin: 5px 0 5px 0;"
+							onclick="javascript:addCalendar($('.t4').val(), $('.re_day').val())">
+						Add Canlendar
+					</button>
+			</div>
 		</div>	
 		
 		<div class="table_5">
@@ -532,7 +590,7 @@
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t5').val(), '${j.calendarTime}', 'today')">	
 					</span>			
 				</c:forEach>			
 			</div>
@@ -541,7 +599,7 @@
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t5').val(), '${j.calendarTime}', 'manana')">	
 					</span>			
 				</c:forEach>			
 			</div>					  
@@ -550,7 +608,7 @@
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t5').val(), '${j.calendarTime}', 'third')">	
 					</span>			
 				</c:forEach>			
 			</div>	
@@ -559,7 +617,7 @@
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t5').val(), '${j.calendarTime}', 'fourth')">	
 					</span>			
 				</c:forEach>			
 			</div>				
@@ -568,7 +626,7 @@
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t5').val(), '${j.calendarTime}', 'fifth')">	
 					</span>			
 				</c:forEach>			
 			</div>	
@@ -577,29 +635,39 @@
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t5').val(), '${j.calendarTime}', 'sixth')">	
 					</span>			
 				</c:forEach>			
 			</div>		  
+			
+							<!-- 	Add Canlendar	-->
+				<div>
+					<button type="button" id="" 
+							class="btn btn-default" 
+							style="position:relative; font-size: 100%; margin: 5px 0 5px 0;"
+							onclick="javascript:addCalendar($('.t5').val(), $('.re_day').val())">
+						Add Canlendar
+					</button>
+			</div>
 		</div>	
 		
 		<div class="table_6">
 			<!-- Calendar for Table No.6 -->
-			<div align="left"  class="tp timepicker0" style="padding-left:13%">
+			<div align="left"  class="tp timepicker0"  style="padding-left: 13%">
 	 			<c:forEach var="j" begin="0" items="${t6_today_calendar }" end="15" varStatus="st">
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t6').val(), '${j.calendarTime}', 'today')">	
 					</span>			
 				</c:forEach>			
 			</div>
-			<div align="left"  class="tp timepicker1"  style="padding-left:13%">
+			<div align="left"  class="tp timepicker1"  style="padding-left: 13%">
 	 			<c:forEach var="j" begin="0" items="${t6_manana_calendar }" end="15" varStatus="st">
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t6').val(), '${j.calendarTime}', 'manana')">	
 					</span>			
 				</c:forEach>			
 			</div>					  
@@ -608,7 +676,7 @@
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t6').val(), '${j.calendarTime}', 'third')">	
 					</span>			
 				</c:forEach>			
 			</div>	
@@ -617,7 +685,7 @@
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t6').val(), '${j.calendarTime}', 'fourth')">	
 					</span>			
 				</c:forEach>			
 			</div>				
@@ -626,7 +694,7 @@
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t6').val(), '${j.calendarTime}', 'fifth')">	
 					</span>			
 				</c:forEach>			
 			</div>	
@@ -635,9 +703,19 @@
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t6').val(), '${j.calendarTime}', 'sixth')">	
 					</span>			
 				</c:forEach>			
+			</div>		  
+			
+							<!-- 	Add Canlendar	-->
+				<div>
+					<button type="button" id="" 
+							class="btn btn-default" 
+							style="position:relative; font-size: 100%; margin: 5px 0 5px 0;"
+							onclick="javascript:addCalendar($('.t6').val(), $('.re_day').val())">
+						Add Canlendar
+					</button>
 			</div>
 		</div>
 			
@@ -648,7 +726,7 @@
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t7').val(), '${j.calendarTime}', 'today')">	
 					</span>			
 				</c:forEach>			
 			</div>
@@ -657,7 +735,7 @@
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t7').val(), '${j.calendarTime}', 'manana')">	
 					</span>			
 				</c:forEach>			
 			</div>					  
@@ -666,7 +744,7 @@
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t7').val(), '${j.calendarTime}', 'third')">	
 					</span>			
 				</c:forEach>			
 			</div>	
@@ -675,7 +753,7 @@
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t7').val(), '${j.calendarTime}', 'fourth')">	
 					</span>			
 				</c:forEach>			
 			</div>				
@@ -684,7 +762,7 @@
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t7').val(), '${j.calendarTime}', 'fifth')">	
 					</span>			
 				</c:forEach>			
 			</div>	
@@ -693,11 +771,21 @@
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t7').val(), '${j.calendarTime}', 'sixth')">	
 					</span>			
 				</c:forEach>			
-			</div>	
-		</div>
+			</div>		  
+			
+							<!-- 	Add Canlendar	-->
+				<div>
+					<button type="button" id="" 
+							class="btn btn-default" 
+							style="position:relative; font-size: 100%; margin: 5px 0 5px 0;"
+							onclick="javascript:addCalendar($('.t7').val(), $('.re_day').val())">
+						Add Canlendar
+					</button>
+			</div>
+		</div>	
 
 		<div class="table_8">
 						<!-- Calendar for Table No.7 -->
@@ -706,7 +794,7 @@
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t8').val(), '${j.calendarTime}', 'today')">	
 					</span>			
 				</c:forEach>			
 			</div>
@@ -715,7 +803,7 @@
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t8').val(), '${j.calendarTime}', 'manana')">	
 					</span>			
 				</c:forEach>			
 			</div>					  
@@ -724,7 +812,7 @@
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t8').val(), '${j.calendarTime}', 'third')">	
 					</span>			
 				</c:forEach>			
 			</div>	
@@ -733,7 +821,7 @@
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t8').val(), '${j.calendarTime}', 'fourth')">	
 					</span>			
 				</c:forEach>			
 			</div>				
@@ -742,7 +830,7 @@
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t8').val(), '${j.calendarTime}', 'fifth')">	
 					</span>			
 				</c:forEach>			
 			</div>	
@@ -751,9 +839,19 @@
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t8').val(), '${j.calendarTime}', 'sixth')">	
 					</span>			
 				</c:forEach>			
+			</div>		  
+		
+					<!-- 	Add Canlendar	-->
+			<div>
+				<button type="button" id="" 
+						class="btn btn-default" 
+						style="position:relative; font-size: 100%; margin: 5px 0 5px 0;"
+						onclick="javascript:addCalendar($('.t8').val(), $('.re_day').val())">
+					Add Canlendar
+				</button>
 			</div>
 		</div>	
 		
@@ -764,7 +862,7 @@
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t9').val(), '${j.calendarTime}', 'today')">	
 					</span>			
 				</c:forEach>			
 			</div>
@@ -773,7 +871,7 @@
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t9').val(), '${j.calendarTime}', 'manana')">	
 					</span>			
 				</c:forEach>			
 			</div>					  
@@ -782,7 +880,7 @@
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t9').val(), '${j.calendarTime}', 'third')">	
 					</span>			
 				</c:forEach>			
 			</div>	
@@ -791,7 +889,7 @@
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t9').val(), '${j.calendarTime}', 'fourth')">	
 					</span>			
 				</c:forEach>			
 			</div>				
@@ -800,7 +898,7 @@
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t9').val(), '${j.calendarTime}', 'fifth')">	
 					</span>			
 				</c:forEach>			
 			</div>	
@@ -809,28 +907,31 @@
 					<span class="" style="text-align: center;">	
 						<input type="button" class="time time_admin time-sh"
 							value="${j.calendarTime} " 
-							onclick="time('${j.calendarTime}')">	
+							onclick="deleteCalendar($('.t9').val(), '${j.calendarTime}', 'sixth')">	
 					</span>			
 				</c:forEach>			
+			</div>		  
+			
+							<!-- 	Add Canlendar	-->
+			<div>
+				<button type="button" id="" 
+						class="btn btn-default" 
+						style="position:relative; font-size: 100%; margin: 5px 0 5px 0;"
+						onclick="javascript:addCalendar($('.t9').val(), $('.re_day').val())">
+					Add Canlendar
+				</button>
 			</div>
-		</div>
-		
-			<br /><br />
-			<div style="position:relative; align-self: center; text-align: center;">
-				<span>			
-					<input type="text" class="reserve_label" style="border:none; font-size: 70%;" size="5" readonly="readonly"/>&nbsp;&nbsp;
-					<input type="text" class="re_time" style="border:none;font-size: 70%;" size="5" readonly="readonly"/>&nbsp;&nbsp;
-					<input type="text" class="re_day" style="border:none;font-size: 70%;" size="5" readonly="readonly"/>
-				</span>
-			</div>	
+		</div>			
 		
 		<%
 			}
 		%>
 
 
-		</div>		
+		</div>	
+	
 			
+		
 			
 		<script type="text/javascript" src="script/bookup.js"></script>		
 
@@ -967,54 +1068,98 @@
 		
 	<%
 		if(email == null ){
-			
-		} else if(!email.equals(admin)){
 	%>
+					
+	<%
+		}else if(email.equals(admin)){
+	%>	
+				<!--  Administrator's Purchase Full List -->
+
 				<div class="pList zoomTarget scroll scroll4" id="pList" data-duration="800" 
-						style="position:fixed; width:42%;height:20%; bottom:0%;left:22%;
-						background-color: #feeba8; font-size: 50%;overflow:auto;">
-							
-							<!-- middle title -->
-						<div class="col-xs-12 label label-default"
-							style="font-family:monospace; text-align: center;
-								padding: 1% 0% 0.3% 0%;border-bottom: 5px solid white">
-							<label class="col-xs-2">Index</label>
-							<label class="col-xs-2">Date</label>
-							<label class="col-xs-1">time</label>
-							<label class="col-xs-1">Table</label>
-							<label class="col-xs-5">Ordered Menu</label>
-							<label class="col-xs-1">Cancel</label>	
-						</div>
-						
-							<!-- book list -->
-						<c:forEach var="i" items="${cblist}" begin="0"	end="23" varStatus="st">
-							<div class="col-xs-12" style="font-family:monospace; text-align: center;
-									padding: 1% 0% 1% 0%;border-bottom: 5px solid white;overflow: auto;">
-								<input type="hidden" class="bseq${st.index}" value="${i.b_seq }">
-								<div class="col-xs-2">${i.b_seq }</div>
-								<div class="col-xs-2">${i.reserved_wmy }</div>
-								<div class="col-xs-1">${i.reserved_Time }</div>
-								<div class="col-xs-1">${i.t_index }</div>
-								<div class="col-xs-5">${i.menuname }</div>
+					style="position:fixed; width:42%;height:20%; bottom:15%;left:22%;
+					background-color: #feeba8; font-size: 50%;overflow:auto;">
+					
+					<div class="col-xs-12 label label-info"
+						style="font-family:monospace; text-align: center;
+							padding: 1% 0% 0.3% 0%;border-bottom: 5px solid white">
+						<label class="col-xs-1">Index</label>
+						<label class="col-xs-1">Date</label>
+						<label class="col-xs-1">time</label>
+						<label class="col-xs-1">Table</label>
+						<label class="col-xs-5">Ordered Menu</label>
+						<label class="col-xs-1">Email</label>
+						<label class="col-xs-1">Distance</label>	
+						<label class="col-xs-1">Cancel</label>	
+					</div>
+					
+					<c:forEach var="i" items="${plist}" begin="0"	end="23" varStatus="st">
+						<div class="col-xs-12" style="font-family:monospace; text-align: center;
+								padding: 1% 0% 1% 0%;border-bottom: 5px solid white;">
+							<input type="hidden" class="bseq${st.index}" value="${i.b_seq }">
+							<div class="col-xs-1">${i.b_seq }</div>
+							<div class="col-xs-1">${i.reserved_wmy }</div>
+							<div class="col-xs-1">${i.reserved_Time }</div>
+							<div class="col-xs-1">${i.t_index }</div>
+							<div class="col-xs-5">${i.menuname }</div>
+							<div class="col-xs-1">${i.email }</div>
+							<div class="col-xs-1">${i.distance }</div>
+							<div class="col-xs-1">
 								<div class="col-xs-1">
-									<div class="col-xs-1">
-										<a class="glyphicon glyphicon-minus-sign" 
-											style="text-decoration: none;"
-											onclick="bseq(${st.index});cancel();">
-										</a>
-									</div>
+									<a class="glyphicon glyphicon-minus-sign" 
+										style="text-decoration: none;" 
+										onclick="bseq(${st.index});cancel();">
+									</a>
 								</div>
-							</div>
-						</c:forEach>
+							</div>							
+						</div>
+					</c:forEach>
 					<!-- get bseq index when click cancel button -->
 					<input type="hidden" class="bseq" value=""/>
-				</div>	
+				</div>
 
+				<!--  Cumstomer's Purchase Full List -->
+				
+				<br />
+				<div class="container" style="width:100%; padding:2%; position: relative;">
+					<div class="form-group row pull-right">
+						<div class="col-xs-6">
+							<input class="form-control" id="keyword" onkeyup="$('.table').show();searchFunction()" type="text" size="26">
+						</div>
+						<div class="col-xs-2">
+							<button id="userButton" class="btn btn-primary" type="button" onclick="$('.table').show();searchFunction();" >Search</button>
+						</div>
+					</div>
+					<table class="row zoomTarget form-group" data-duration="800" 
+								style="text-align: center;padding:2%;width:80%; background-color: #feeba8; font-size: 100%;overflow:scroll;">
+						<thead style="padding: 5px;">
+							<tr class="table" style="background-color: #999999;color:#ffffff;
+							font-family: 'Bungee Hairline', cursive; font-size: 80%;">
+								<th class="col-xs-1" style="text-align: center;padding:1% 0% 1% 0%;">Index </th>
+								<th class="col-xs-1" style="text-align: center;">Date </th>
+								<th class="col-xs-1" style="text-align: center;">time </th>
+								<th class="col-xs-1" style="text-align: center;">Table</th>
+								<th class="col-xs-3" style="text-align: center;">Ordered Menu</th>
+								<th class="col-xs-2" style="text-align: center;">Email</th>
+								<th class="col-xs-2" style="text-align: center;">Distance</th>
+								<th class="col-xs-1" style="text-align: center;">Cancel</th>
+							</tr>
+						</thead>
+						
+						<tbody id="ajaxTable" class="" 
+							style="width:60%;
+								font-family: 'Bungee Hairline', cursive; 
+								font-weight:bolder; 
+								padding:5px;
+								font-size: 80%;"></tbody>
+						
+					</table>
+				</div>
 	<%		
 		}else{
 			
 		}
-	%>
+	%>	
+	
 			</div>
 		</div>
 	</div>

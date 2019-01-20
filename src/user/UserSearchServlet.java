@@ -40,18 +40,19 @@ public class UserSearchServlet extends HttpServlet {
 			getDeleteMenu(menuname);
 			
 		}else if(com.equals("/deleteCalendar.com")) {
+			String table = request.getParameter("table");
 			String time = request.getParameter("time");
 			String day = request.getParameter("day");
-			System.out.println("day : " + day);
-			getDeleteToday(time, day);
+			System.out.println("table : " + table);
+			getDeleteToday(table, time, day);
 		}
 	}
 	
-	private void getDeleteToday(String time, String day) {
-		
+	private void getDeleteToday(String table, String time, String day) {
+		System.out.println("getDeleteToday table : " + table);
 		if(time == null) time = "";
 		AjaxDAO ajaxDAO = new AjaxDAO();
-		ajaxDAO.deleteToday(time, day);
+		ajaxDAO.deleteToday(table, time, day);
 		
 	}
 
@@ -65,29 +66,12 @@ public class UserSearchServlet extends HttpServlet {
 	// Delete Reservation
 	public String getCancel(String bseq) {
 		if(bseq == null) bseq = "";
-		StringBuffer result = new StringBuffer("");		
+		String result = null;
 		
 		AjaxDAO ajaxDAO = new AjaxDAO();
-		ArrayList<URDto> userList = ajaxDAO.cancel(bseq);
-		System.out.println(userList);
+		ajaxDAO.cancel(bseq);
 		
-		result.append("{\"result\":[");
-
-		for(int i=0; i < userList.size(); i++) {
-			result.append("[{\"value\": \"" + userList.get(i).getB_seq() + "\"},");
-			result.append("{\"value\": \"" + userList.get(i).getReserved_wmy() + "\"},");
-			result.append("{\"value\": \"" + userList.get(i).getReserved_Time() + "\"},");
-			result.append("{\"value\": \"" + userList.get(i).getT_index() + "\"},");
-			result.append("{\"value\": \"" + userList.get(i).getMenuname() + "\"},");
-			result.append("{\"value\": \"" + userList.get(i).getEmail() + "\"},");
-			result.append("{\"value\": \"" + userList.get(i).getDistance() + "\"},");
-			result.append("{\"value\": \"" + userList.get(i).getDistance() + "\"}],");
-			
-		}
-		
-		result.append("]}");
-		System.out.println(result);
-		return result.toString();
+		return result;
 	}
 
 	//제이슨으로 변환

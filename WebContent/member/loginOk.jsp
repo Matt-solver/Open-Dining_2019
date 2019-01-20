@@ -8,6 +8,7 @@
 %>  
 <%	
 	String email = null;
+	String admin = "exorsa1525@gmail.com";
 	String pw = null;
 	String dist = null;
 	String phone = null;
@@ -54,12 +55,28 @@
 			// use for checking login status whether or not 
 			session.setAttribute("ValidMem", "yes"); 
 %>
+<%
+	if(session.getAttribute("ValidMem") != null && !email.equals(admin)) {
+%>
 			<script lang="Javascript">
 			var email = '<%=email%>';
 			alert('Connect into ' + email);
-			opener.parent.location.reload();
+			opener.parent.location.replace('http://localhost:8181/Project1_KGITBANK/index.do');
 			self.close();
 			</script>
+<%
+	}else if(session.getAttribute("ValidMem") != null && email.equals(admin)){
+%>
+			<script lang="Javascript">
+			alert('Connect into admin ID');
+			opener.parent.location.replace('http://localhost:8181/Project1_KGITBANK/admin_index.do');
+			self.close();
+			</script>
+<%
+	}else{
+		
+	}
+%>
 			
 <%
 	dto.setRegJointime((new Timestamp(System.currentTimeMillis())));

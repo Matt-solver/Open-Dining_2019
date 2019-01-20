@@ -59,11 +59,11 @@
 			alert('Deleted menu ' + $('#mn').val())
 		
 		}
-		function deleteCalendar(time, day) {
+		function deleteCalendar(table, time, day) {
 			
-			request.open("Post", "./deleteCalendar.com?time=" + encodeURIComponent(time) + "&day=" + encodeURIComponent(day), true);
+			request.open("Post", "./deleteCalendar.com?table=Table No." + encodeURIComponent(table) + "&time=" + encodeURIComponent(time) + "&day=" + encodeURIComponent(day), true);
 			request.send(null);
-			alert("Deleted " + day + " time is "+ time)
+			alert("Deleted Table No." + table + " " + day + " " + time)
 			
 			setTimeout(function() {
 				self.location.reload();

@@ -6,6 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
+import com.jsp.pj1.dao.JdbcUtil;
+
 public class AjaxDAO {
 
 	private Connection conn;
@@ -27,7 +29,9 @@ public class AjaxDAO {
 	}
 	
 	public ArrayList<URDto> search(String keyword) {
-		String query = "SELECT * FROM bookup WHERE t_index||menuname||email||reserved_wmy||reserved_day||reserved_Time LIKE ?";
+		String query = "SELECT * FROM bookup "
+				+ "WHERE t_index||menuname||email||"
+				+ "reserved_wmy||reserved_day||reserved_Time LIKE ?";
 		ArrayList<URDto> userList = new ArrayList<URDto>();
 		
 		try {
@@ -109,24 +113,21 @@ public class AjaxDAO {
 				e.printStackTrace();
 			
 			}finally {
-				try {
-					if(pstmt != null) pstmt.close();
-					if(conn != null) conn.close();
-				} catch (Exception e2) {
-					e2.printStackTrace();
-			}
+				JdbcUtil.close(conn);
+				JdbcUtil.close(pstmt);
 		}
 	}
 
-	public void deleteToday(String time, String day) {
-		System.out.println("dao.deleteToday(day) : " + day);
+	public void deleteToday(String table, String time, String day) {
+		System.out.println("dao.deleteToday(table) : " + table);
 		
-		String query = "delete calendar where calendar_time = ? and calendar_day= ?";	
+		String query = "delete calendar where calendar_table = ? and calendar_time = ? and calendar_day= ?";	
 		
 		try {
 			pstmt = conn.prepareStatement(query);
-			pstmt.setString(1, time);
-			pstmt.setString(2, day);
+			pstmt.setString(1, table);
+			pstmt.setString(2, time);
+			pstmt.setString(3, day);
 			
 			pstmt.executeUpdate();
 	
@@ -134,12 +135,8 @@ public class AjaxDAO {
 				e.printStackTrace();
 			
 			}finally {
-				try {
-					if(pstmt != null) pstmt.close();
-					if(conn != null) conn.close();
-				} catch (Exception e2) {
-					e2.printStackTrace();
-			}
+				JdbcUtil.close(conn);
+				JdbcUtil.close(pstmt);
 		}
 	}
 	

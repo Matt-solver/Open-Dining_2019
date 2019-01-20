@@ -35,18 +35,6 @@ public class Dao {
 	public static final int BOOKUP_SUCCESS = 1;
 	public static final int DELETE_SUCCESS = 1;
 	
-	private static Dao instance = new Dao();	// �ڱⰡ �ڱ�Ŭ�������� �ڽ��� �����ϰ� �װ��� �����ϰ� �ִ� ���� 
-	
-	public Dao() {
-
-	}
-
-
-	public static Dao getInstance() {	// getInstance�� ������ �� �ֵ��� static �޼ҵ带 ����� ����
-		
-		return instance;
-	}
-	
 	
 	private Connection getConnection() {
 		Context cont = null;
@@ -63,6 +51,25 @@ public class Dao {
 		}
 		
 		return conn;
+	}
+	
+	/*
+	 * Single tone pattern
+	 * 
+	 * 서비스클래스 : 호출될 때마다 새로운 서비스 객체를 생성해서 사용
+	 * 싱클톤 패턴의 적용 : 매번 동일한 객체를 리턴하므로 같은 객체를 참조하게된다.
+	 * 접근제어 수식어 : private이기때문에 외부 클래스에서는 객체를 생성할 수 없게된다.
+	 * 유일하게 객체에 접근할 수 있는 getInstance() 정적메소드를 통해서만 DAO에 접근할 수 있게 하였다.
+	 */
+	private static Dao instance = new Dao();
+	
+	public Dao() {
+
+	}
+
+	public static Dao getInstance() {	// getInstance�� ������ �� �ֵ��� static �޼ҵ带 ����� ����
+		
+		return instance;
 	}
 	
 /*	//Cancel book
@@ -95,20 +102,21 @@ public class Dao {
 		
 	}*/
 	
-	public ArrayList<CDto> schedule(String day, String time) {
+	public ArrayList<CDto> schedule(String table, String day, String time) {
 		System.out.println(day + " "+ time);
 		ArrayList<CDto> CDto = new ArrayList<CDto>();
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		System.out.println("dao.schedule()");
-		String query = "INSERT INTO calendar VALUES(?, ?)";
+		String query = "INSERT INTO calendar VALUES(?, ?, ?)";
 		
 		try {
 			conn = getConnection();
 			pstmt = conn.prepareStatement(query);
 			
-				pstmt.setString(1, day);
-				pstmt.setString(2, time);
+				pstmt.setString(1, table);
+				pstmt.setString(2, day);
+				pstmt.setString(3, time);
 				pstmt.executeUpdate();
 			
 		}catch (Exception e) {
@@ -158,13 +166,9 @@ public class Dao {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}finally {
-			try {
-				rs.close();
-				pstmt.close();
-				conn.close();
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
+			JdbcUtil.close(rs);
+			JdbcUtil.close(pstmt);
+			JdbcUtil.close(conn);
 		}
 		return bki;
 		
@@ -203,13 +207,9 @@ public class Dao {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}finally {
-			try {
-				rs.close();
-				pstmt.close();
-				conn.close();
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
+			JdbcUtil.close(rs);
+			JdbcUtil.close(pstmt);
+			JdbcUtil.close(conn);
 		}
 		return pcl;
 		
@@ -248,13 +248,9 @@ public class Dao {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}finally {
-			try {
-				rs.close();
-				pstmt.close();
-				conn.close();
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
+			JdbcUtil.close(rs);
+			JdbcUtil.close(pstmt);
+			JdbcUtil.close(conn);
 		}
 		return pcl;
 		
@@ -331,12 +327,9 @@ public class Dao {
 			e.printStackTrace();
 			
 		}finally {
-			try {
-				if(pstmt != null) pstmt.close();
-				if(conn != null) conn.close();
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
+				JdbcUtil.rollback(conn);
+				JdbcUtil.close(pstmt);
+				JdbcUtil.close(conn);
 		}
 		  
 		
@@ -409,12 +402,8 @@ public class Dao {
 			e.printStackTrace();
 			
 		}finally {
-			try {
-				if(pstmt != null) pstmt.close();
-				if(conn != null) conn.close();
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
+			JdbcUtil.close(pstmt);
+			JdbcUtil.close(conn);
 		}
 	}
 
@@ -436,12 +425,8 @@ public class Dao {
 				e.printStackTrace();
 			
 			}finally {
-				try {
-					if(pstmt != null) pstmt.close();
-					if(conn != null) conn.close();
-				} catch (Exception e2) {
-					e2.printStackTrace();
-			}
+				JdbcUtil.close(pstmt);
+				JdbcUtil.close(conn);
 		}
 	}
 	
@@ -477,13 +462,8 @@ public class Dao {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}finally {
-			try {
-				rs.close();
-				pstmt.close();
-				conn.close();
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
+			JdbcUtil.close(pstmt);
+			JdbcUtil.close(conn);
 		}
 		return dtos;
 		
@@ -514,12 +494,8 @@ public class Dao {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}finally {
-			try {
-				if(pstmt != null) pstmt.close();
-				if(conn != null) conn.close();
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
+			JdbcUtil.close(pstmt);
+			JdbcUtil.close(conn);
 		}
 		return ri;
 	}
@@ -546,12 +522,8 @@ public class Dao {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}finally {
-			try {
-				if(pstmt != null) pstmt.close();
-				if(conn != null) conn.close();
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
+			JdbcUtil.close(pstmt);
+			JdbcUtil.close(conn);
 		}
 		return ri;
 	}
@@ -581,14 +553,9 @@ public class Dao {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}finally {
-			try {
-				rs.close();
-				pstmt.close();
-				conn.close();
-				
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
+				JdbcUtil.close(rs);
+				JdbcUtil.close(pstmt);
+				JdbcUtil.close(conn);
 		}
 		return ri;
 	}
@@ -616,14 +583,9 @@ public class Dao {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}finally {
-			try {
-				rs.close();
-				pstmt.close();
-				conn.close();
-				
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
+			JdbcUtil.close(rs);
+			JdbcUtil.close(pstmt);
+			JdbcUtil.close(conn);
 		}
 		return ri;
 	}
@@ -651,14 +613,9 @@ public class Dao {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}finally {
-			try {
-				rs.close();
-				pstmt.close();
-				conn.close();
-				
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
+			JdbcUtil.close(rs);
+			JdbcUtil.close(pstmt);
+			JdbcUtil.close(conn);
 		}
 		return ri;
 	}
@@ -686,14 +643,9 @@ public class Dao {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}finally {
-			try {
-				rs.close();
-				pstmt.close();
-				conn.close();
-				
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
+			JdbcUtil.close(rs);
+			JdbcUtil.close(pstmt);
+			JdbcUtil.close(conn);
 		}
 		return ri;
 	}
@@ -723,14 +675,9 @@ public class Dao {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}finally {
-			try {
-				rs.close();
-				pstmt.close();
-				conn.close();
-				
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
+			JdbcUtil.close(rs);
+			JdbcUtil.close(pstmt);
+			JdbcUtil.close(conn);
 		}
 		return dto;
 	}
@@ -760,14 +707,9 @@ public class Dao {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}finally {
-			try {
-				rs.close();
-				pstmt.close();
-				conn.close();
-				
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
+			JdbcUtil.close(rs);
+			JdbcUtil.close(pstmt);
+			JdbcUtil.close(conn);
 		}
 		return dto;
 	}
@@ -795,14 +737,9 @@ public class Dao {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}finally {
-			try {
-				rs.close();
-				pstmt.close();
-				conn.close();
-				
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
+			JdbcUtil.close(rs);
+			JdbcUtil.close(pstmt);
+			JdbcUtil.close(conn);
 		}
 		return ri;
 	}
@@ -841,13 +778,9 @@ public class Dao {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}finally {
-				try {
-					rs.close();
-					pstmt.close();
-					conn.close();
-				} catch (Exception e2) {
-					e2.printStackTrace();
-				}
+				JdbcUtil.close(rs);
+				JdbcUtil.close(pstmt);
+				JdbcUtil.close(conn);
 			}
 			return ri;
 		}
@@ -872,12 +805,8 @@ public class Dao {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}finally {
-				try {
-					pstmt.close();
-					conn.close();
-				} catch (Exception e2) {
-					e2.printStackTrace();
-				}
+				JdbcUtil.close(pstmt);
+				JdbcUtil.close(conn);
 			}
 			return ri;
 		}
@@ -911,20 +840,16 @@ public class Dao {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}finally {
-				try {
-					rs.close();
-					pstmt.close();
-					conn.close();
-				} catch (Exception e2) {
-					e2.printStackTrace();
-				}
+					JdbcUtil.close(rs);
+					JdbcUtil.close(pstmt);
+					JdbcUtil.close(conn);
 			}
 			
 			return dto;
 		}
 
 	
-		// time fo bookup * 6		public ArrayList<CDto> calendar() {
+		// Table No.1 today ~ sixth all time		public ArrayList<CDto> t1_today_calendar() {
 			ArrayList<CDto> ccc = new ArrayList<CDto>();
 			Connection conn = null;
 			PreparedStatement pstmt = null;
@@ -934,39 +859,35 @@ public class Dao {
 				conn = getConnection();
 				
 				String query = "SELECT * FROM calendar "
-							 + "WHERE calendar_day='today' and calendar_time "
-							 + "NOT IN (SELECT DISTINCT reserved_Time FROM bookup"
-							 + " WHERE reserved_day='today') ORDER BY calendar_time ASC";
+						+ "WHERE calendar_table='Table No.1' and calendar_day='today' and calendar_time "
+						+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.1') "
+						+ "ORDER BY calendar_time ASC";
 				pstmt = conn.prepareStatement(query);
 				rs = pstmt.executeQuery();
 				System.out.println("calendar() rs : " + rs);
 				
 				while(rs.next()) {
+					String calendar_table = rs.getString("calendar_table");
 					String calendar_day = rs.getString("calendar_day");
 					String calendar_time = rs.getString("calendar_time");
 					
 					System.out.println("calendar_day :" + calendar_day);
 					
-					CDto cdto = new CDto(calendar_day, calendar_time);
+					CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
 					ccc.add(cdto);
 				}
 				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}finally {
-				try {
-					rs.close();
-					pstmt.close();
-					conn.close();
-				} catch (Exception e2) {
-					e2.printStackTrace();
-				}
+				JdbcUtil.close(rs);
+				JdbcUtil.close(pstmt);
+				JdbcUtil.close(conn);
 			}
 			return ccc;
 			
 		}
-		public ArrayList<CDto> calendar_manana() {
-			
+		public ArrayList<CDto> t1_manana_calendar() {
 			ArrayList<CDto> ccc = new ArrayList<CDto>();
 			Connection conn = null;
 			PreparedStatement pstmt = null;
@@ -976,38 +897,35 @@ public class Dao {
 				conn = getConnection();
 				
 				String query = "SELECT * FROM calendar "
-						+ "WHERE calendar_day='manana' and calendar_time "
-						+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup"
-						+ " WHERE reserved_day='manana') ORDER BY calendar_time ASC";
+						+ "WHERE calendar_table='Table No.1' and calendar_day='manana' and calendar_time "
+						+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.1') "
+						+ "ORDER BY calendar_time ASC";
 				pstmt = conn.prepareStatement(query);
 				rs = pstmt.executeQuery();
+				System.out.println("calendar() rs : " + rs);
 				
 				while(rs.next()) {
+					String calendar_table = rs.getString("calendar_table");
 					String calendar_day = rs.getString("calendar_day");
 					String calendar_time = rs.getString("calendar_time");
 					
-					//System.out.println("time :" + time);
+					System.out.println("calendar_day :" + calendar_day);
 					
-					CDto cdto = new CDto(calendar_day, calendar_time);
+					CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
 					ccc.add(cdto);
 				}
 				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}finally {
-				try {
-					rs.close();
-					pstmt.close();
-					conn.close();
-				} catch (Exception e2) {
-					e2.printStackTrace();
-				}
+				JdbcUtil.close(rs);
+				JdbcUtil.close(pstmt);
+				JdbcUtil.close(conn);
 			}
 			return ccc;
 			
 		}
-		public ArrayList<CDto> calendar_third() {
-			
+		public ArrayList<CDto> t1_third_calendar() {
 			ArrayList<CDto> ccc = new ArrayList<CDto>();
 			Connection conn = null;
 			PreparedStatement pstmt = null;
@@ -1017,38 +935,35 @@ public class Dao {
 				conn = getConnection();
 				
 				String query = "SELECT * FROM calendar "
-						+ "WHERE calendar_day='today' and calendar_time "
-						+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup "
-						+ "WHERE reserved_day='today') ORDER BY calendar_time ASC";
+						+ "WHERE calendar_table='Table No.1' and calendar_day='third' and calendar_time "
+						+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.1') "
+						+ "ORDER BY calendar_time ASC";
 				pstmt = conn.prepareStatement(query);
 				rs = pstmt.executeQuery();
+				System.out.println("calendar() rs : " + rs);
 				
 				while(rs.next()) {
+					String calendar_table = rs.getString("calendar_table");
 					String calendar_day = rs.getString("calendar_day");
 					String calendar_time = rs.getString("calendar_time");
 					
-					//System.out.println("time :" + time);
+					System.out.println("calendar_day :" + calendar_day);
 					
-					CDto cdto = new CDto(calendar_day, calendar_time);
+					CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
 					ccc.add(cdto);
 				}
 				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}finally {
-				try {
-					rs.close();
-					pstmt.close();
-					conn.close();
-				} catch (Exception e2) {
-					e2.printStackTrace();
-				}
+				JdbcUtil.close(rs);
+				JdbcUtil.close(pstmt);
+				JdbcUtil.close(conn);
 			}
-			return ccc;	
-		}
-		
-		public ArrayList<CDto> calendar_fourth() {
+			return ccc;
 			
+		}
+		public ArrayList<CDto> t1_fourth_calendar() {
 			ArrayList<CDto> ccc = new ArrayList<CDto>();
 			Connection conn = null;
 			PreparedStatement pstmt = null;
@@ -1058,117 +973,1943 @@ public class Dao {
 				conn = getConnection();
 				
 				String query = "SELECT * FROM calendar "
-						+ "WHERE calendar_day='fourth' and calendar_time "
-						+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup "
-						+ "WHERE reserved_day='fourth') ORDER BY calendar_time ASC";
+						+ "WHERE calendar_table='Table No.1' and calendar_day='fourth' and calendar_time "
+						+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.1') "
+						+ "ORDER BY calendar_time ASC";
 				pstmt = conn.prepareStatement(query);
 				rs = pstmt.executeQuery();
+				System.out.println("calendar() rs : " + rs);
 				
 				while(rs.next()) {
+					String calendar_table = rs.getString("calendar_table");
 					String calendar_day = rs.getString("calendar_day");
 					String calendar_time = rs.getString("calendar_time");
 					
-					//System.out.println("time :" + time);
+					System.out.println("calendar_day :" + calendar_day);
 					
-					CDto cdto = new CDto(calendar_day, calendar_time);
+					CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
 					ccc.add(cdto);
 				}
 				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}finally {
-				try {
-					rs.close();
-					pstmt.close();
-					conn.close();
-				} catch (Exception e2) {
-					e2.printStackTrace();
+				JdbcUtil.close(rs);
+				JdbcUtil.close(pstmt);
+				JdbcUtil.close(conn);
+			}
+			return ccc;
+			
+		}
+		public ArrayList<CDto> t1_fifth_calendar() {
+			ArrayList<CDto> ccc = new ArrayList<CDto>();
+			Connection conn = null;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+					
+			try {
+				conn = getConnection();
+				
+				String query = "SELECT * FROM calendar "
+						+ "WHERE calendar_table='Table No.1' and calendar_day='fifth' and calendar_time "
+						+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.1') "
+						+ "ORDER BY calendar_time ASC";
+				pstmt = conn.prepareStatement(query);
+				rs = pstmt.executeQuery();
+				System.out.println("calendar() rs : " + rs);
+				
+				while(rs.next()) {
+					String calendar_table = rs.getString("calendar_table");
+					String calendar_day = rs.getString("calendar_day");
+					String calendar_time = rs.getString("calendar_time");
+					
+					System.out.println("calendar_day :" + calendar_day);
+					
+					CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
+					ccc.add(cdto);
 				}
-			}
-			return ccc;	
-		}	
-		
-	public ArrayList<CDto> calendar_fifth() {
-		
-		ArrayList<CDto> ccc = new ArrayList<CDto>();
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
 				
-		try {
-			conn = getConnection();
-			
-			String query = "SELECT * FROM calendar "
-					+ "WHERE calendar_day='fifth' and calendar_time "
-					+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup "
-					+ "WHERE reserved_day='fifth') ORDER BY calendar_time ASC";
-			pstmt = conn.prepareStatement(query);
-			rs = pstmt.executeQuery();
-			
-			while(rs.next()) {
-				String calendar_day = rs.getString("calendar_day");
-				String calendar_time = rs.getString("calendar_time");
-				
-				//System.out.println("time :" + time);
-				
-				CDto cdto = new CDto(calendar_day, calendar_time);
-				ccc.add(cdto);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}finally {
+				JdbcUtil.close(rs);
+				JdbcUtil.close(pstmt);
+				JdbcUtil.close(conn);
 			}
+			return ccc;
 			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}finally {
-			try {
-				rs.close();
-				pstmt.close();
-				conn.close();
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
 		}
-		return ccc;
-		
-	}	
-	
-	public ArrayList<CDto> calendar_sixth() {
-		
-		ArrayList<CDto> ccc = new ArrayList<CDto>();
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-				
-		try {
-			conn = getConnection();
-			
-			String query = "SELECT * FROM calendar "
-					+ "WHERE calendar_day='sixth' and calendar_time "
-					+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup "
-					+ "WHERE reserved_day='sixth') ORDER BY calendar_time ASC";
-			pstmt = conn.prepareStatement(query);
-			rs = pstmt.executeQuery();
-			
-			while(rs.next()) {
-				String calendar_day = rs.getString("calendar_day");
-				String calendar_time = rs.getString("calendar_time");
-				
-				//System.out.println("time :" + time);
-				
-				CDto cdto = new CDto(calendar_day, calendar_time);
-				ccc.add(cdto);
-			}
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}finally {
+		public ArrayList<CDto> t1_sixth_calendar() {
+			ArrayList<CDto> ccc = new ArrayList<CDto>();
+			Connection conn = null;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+					
 			try {
-				rs.close();
-				pstmt.close();
-				conn.close();
-			} catch (Exception e2) {
-				e2.printStackTrace();
+				conn = getConnection();
+				
+				String query = "SELECT * FROM calendar "
+						+ "WHERE calendar_table='Table No.1' and calendar_day='sixth' and calendar_time "
+						+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.1') "
+						+ "ORDER BY calendar_time ASC";
+				pstmt = conn.prepareStatement(query);
+				rs = pstmt.executeQuery();
+				System.out.println("calendar() rs : " + rs);
+				
+				while(rs.next()) {
+					String calendar_table = rs.getString("calendar_table");
+					String calendar_day = rs.getString("calendar_day");
+					String calendar_time = rs.getString("calendar_time");
+					
+					System.out.println("calendar_day :" + calendar_day);
+					
+					CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
+					ccc.add(cdto);
+				}
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}finally {
+				JdbcUtil.close(rs);
+				JdbcUtil.close(pstmt);
+				JdbcUtil.close(conn);
 			}
+			return ccc;
+			
 		}
-		return ccc;
 		
-	}	
+		// Table No.2 today ~ sixth all time
+				public ArrayList<CDto> t2_today_calendar() {
+					ArrayList<CDto> ccc = new ArrayList<CDto>();
+					Connection conn = null;
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+							
+					try {
+						conn = getConnection();
+						
+						String query = "SELECT * FROM calendar "
+								+ "WHERE calendar_table='Table No.2' and calendar_day='today' and calendar_time "
+								+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.1') "
+								+ "ORDER BY calendar_time ASC";
+						pstmt = conn.prepareStatement(query);
+						rs = pstmt.executeQuery();
+						System.out.println("calendar() rs : " + rs);
+						
+						while(rs.next()) {
+							String calendar_table = rs.getString("calendar_table");
+							String calendar_day = rs.getString("calendar_day");
+							String calendar_time = rs.getString("calendar_time");
+							
+							System.out.println("calendar_day :" + calendar_day);
+							
+							CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
+							ccc.add(cdto);
+						}
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}finally {
+						JdbcUtil.close(rs);
+						JdbcUtil.close(pstmt);
+						JdbcUtil.close(conn);
+					}
+					return ccc;
+					
+				}
+				public ArrayList<CDto> t2_manana_calendar() {
+					ArrayList<CDto> ccc = new ArrayList<CDto>();
+					Connection conn = null;
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+							
+					try {
+						conn = getConnection();
+						
+						String query = "SELECT * FROM calendar "
+								+ "WHERE calendar_table='Table No.2' and calendar_day='manana' and calendar_time "
+								+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.2') "
+								+ "ORDER BY calendar_time ASC";
+						pstmt = conn.prepareStatement(query);
+						rs = pstmt.executeQuery();
+						System.out.println("calendar() rs : " + rs);
+						
+						while(rs.next()) {
+							String calendar_table = rs.getString("calendar_table");
+							String calendar_day = rs.getString("calendar_day");
+							String calendar_time = rs.getString("calendar_time");
+							
+							System.out.println("calendar_day :" + calendar_day);
+							
+							CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
+							ccc.add(cdto);
+						}
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}finally {
+						JdbcUtil.close(rs);
+						JdbcUtil.close(pstmt);
+						JdbcUtil.close(conn);
+					}
+					return ccc;
+					
+				}
+				public ArrayList<CDto> t2_third_calendar() {
+					ArrayList<CDto> ccc = new ArrayList<CDto>();
+					Connection conn = null;
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+							
+					try {
+						conn = getConnection();
+						
+						String query = "SELECT * FROM calendar "
+								+ "WHERE calendar_table='Table No.2' and calendar_day='third' and calendar_time "
+								+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.2') "
+								+ "ORDER BY calendar_time ASC";
+						pstmt = conn.prepareStatement(query);
+						rs = pstmt.executeQuery();
+						System.out.println("calendar() rs : " + rs);
+						
+						while(rs.next()) {
+							String calendar_table = rs.getString("calendar_table");
+							String calendar_day = rs.getString("calendar_day");
+							String calendar_time = rs.getString("calendar_time");
+							
+							System.out.println("calendar_day :" + calendar_day);
+							
+							CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
+							ccc.add(cdto);
+						}
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}finally {
+						JdbcUtil.close(rs);
+						JdbcUtil.close(pstmt);
+						JdbcUtil.close(conn);
+					}
+					return ccc;
+					
+				}
+				public ArrayList<CDto> t2_fourth_calendar() {
+					ArrayList<CDto> ccc = new ArrayList<CDto>();
+					Connection conn = null;
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+							
+					try {
+						conn = getConnection();
+						
+						String query = "SELECT * FROM calendar "
+								+ "WHERE calendar_table='Table No.2' and calendar_day='fourth' and calendar_time "
+								+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.2') "
+								+ "ORDER BY calendar_time ASC";
+						pstmt = conn.prepareStatement(query);
+						rs = pstmt.executeQuery();
+						System.out.println("calendar() rs : " + rs);
+						
+						while(rs.next()) {
+							String calendar_table = rs.getString("calendar_table");
+							String calendar_day = rs.getString("calendar_day");
+							String calendar_time = rs.getString("calendar_time");
+							
+							System.out.println("calendar_day :" + calendar_day);
+							
+							CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
+							ccc.add(cdto);
+						}
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}finally {
+						JdbcUtil.close(rs);
+						JdbcUtil.close(pstmt);
+						JdbcUtil.close(conn);
+					}
+					return ccc;
+					
+				}
+				public ArrayList<CDto> t2_fifth_calendar() {
+					ArrayList<CDto> ccc = new ArrayList<CDto>();
+					Connection conn = null;
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+							
+					try {
+						conn = getConnection();
+						
+						String query = "SELECT * FROM calendar "
+								+ "WHERE calendar_table='Table No.2' and calendar_day='fifth' and calendar_time "
+								+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.2') "
+								+ "ORDER BY calendar_time ASC";
+						pstmt = conn.prepareStatement(query);
+						rs = pstmt.executeQuery();
+						System.out.println("calendar() rs : " + rs);
+						
+						while(rs.next()) {
+							String calendar_table = rs.getString("calendar_table");
+							String calendar_day = rs.getString("calendar_day");
+							String calendar_time = rs.getString("calendar_time");
+							
+							System.out.println("calendar_day :" + calendar_day);
+							
+							CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
+							ccc.add(cdto);
+						}
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}finally {
+						JdbcUtil.close(rs);
+						JdbcUtil.close(pstmt);
+						JdbcUtil.close(conn);
+					}
+					return ccc;
+					
+				}
+				public ArrayList<CDto> t2_sixth_calendar() {
+					ArrayList<CDto> ccc = new ArrayList<CDto>();
+					Connection conn = null;
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+							
+					try {
+						conn = getConnection();
+						
+						String query = "SELECT * FROM calendar "
+								+ "WHERE calendar_table='Table No.2' and calendar_day='sixth' and calendar_time "
+								+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.2') "
+								+ "ORDER BY calendar_time ASC";
+						pstmt = conn.prepareStatement(query);
+						rs = pstmt.executeQuery();
+						System.out.println("calendar() rs : " + rs);
+						
+						while(rs.next()) {
+							String calendar_table = rs.getString("calendar_table");
+							String calendar_day = rs.getString("calendar_day");
+							String calendar_time = rs.getString("calendar_time");
+							
+							System.out.println("calendar_day :" + calendar_day);
+							
+							CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
+							ccc.add(cdto);
+						}
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}finally {
+						JdbcUtil.close(rs);
+						JdbcUtil.close(pstmt);
+						JdbcUtil.close(conn);
+					}
+					return ccc;
+					
+				}
+				
+				// Table No.3 today ~ sixth all time
+				public ArrayList<CDto> t3_today_calendar() {
+					ArrayList<CDto> ccc = new ArrayList<CDto>();
+					Connection conn = null;
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+							
+					try {
+						conn = getConnection();
+						
+						String query = "SELECT * FROM calendar "
+								+ "WHERE calendar_table='Table No.3' and calendar_day='today' and calendar_time "
+								+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.3') "
+								+ "ORDER BY calendar_time ASC";
+						pstmt = conn.prepareStatement(query);
+						rs = pstmt.executeQuery();
+						System.out.println("calendar() rs : " + rs);
+						
+						while(rs.next()) {
+							String calendar_table = rs.getString("calendar_table");
+							String calendar_day = rs.getString("calendar_day");
+							String calendar_time = rs.getString("calendar_time");
+							
+							System.out.println("calendar_day :" + calendar_day);
+							
+							CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
+							ccc.add(cdto);
+						}
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}finally {
+						JdbcUtil.close(rs);
+						JdbcUtil.close(pstmt);
+						JdbcUtil.close(conn);
+					}
+					return ccc;
+					
+				}
+				public ArrayList<CDto> t3_manana_calendar() {
+					ArrayList<CDto> ccc = new ArrayList<CDto>();
+					Connection conn = null;
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+							
+					try {
+						conn = getConnection();
+						
+						String query = "SELECT * FROM calendar "
+								+ "WHERE calendar_table='Table No.3' and calendar_day='manana' and calendar_time "
+								+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.3') "
+								+ "ORDER BY calendar_time ASC";
+						pstmt = conn.prepareStatement(query);
+						rs = pstmt.executeQuery();
+						System.out.println("calendar() rs : " + rs);
+						
+						while(rs.next()) {
+							String calendar_table = rs.getString("calendar_table");
+							String calendar_day = rs.getString("calendar_day");
+							String calendar_time = rs.getString("calendar_time");
+							
+							System.out.println("calendar_day :" + calendar_day);
+							
+							CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
+							ccc.add(cdto);
+						}
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}finally {
+						JdbcUtil.close(rs);
+						JdbcUtil.close(pstmt);
+						JdbcUtil.close(conn);
+					}
+					return ccc;
+					
+				}
+				public ArrayList<CDto> t3_third_calendar() {
+					ArrayList<CDto> ccc = new ArrayList<CDto>();
+					Connection conn = null;
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+							
+					try {
+						conn = getConnection();
+						
+						String query = "SELECT * FROM calendar "
+								+ "WHERE calendar_table='Table No.3' and calendar_day='third' and calendar_time "
+								+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.3') "
+								+ "ORDER BY calendar_time ASC";
+						pstmt = conn.prepareStatement(query);
+						rs = pstmt.executeQuery();
+						System.out.println("calendar() rs : " + rs);
+						
+						while(rs.next()) {
+							String calendar_table = rs.getString("calendar_table");
+							String calendar_day = rs.getString("calendar_day");
+							String calendar_time = rs.getString("calendar_time");
+							
+							System.out.println("calendar_day :" + calendar_day);
+							
+							CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
+							ccc.add(cdto);
+						}
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}finally {
+						JdbcUtil.close(rs);
+						JdbcUtil.close(pstmt);
+						JdbcUtil.close(conn);
+					}
+					return ccc;
+					
+				}
+				public ArrayList<CDto> t3_fourth_calendar() {
+					ArrayList<CDto> ccc = new ArrayList<CDto>();
+					Connection conn = null;
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+							
+					try {
+						conn = getConnection();
+						
+						String query = "SELECT * FROM calendar "
+								+ "WHERE calendar_table='Table No.3' and calendar_day='fourth' and calendar_time "
+								+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.3') "
+								+ "ORDER BY calendar_time ASC";
+						pstmt = conn.prepareStatement(query);
+						rs = pstmt.executeQuery();
+						System.out.println("calendar() rs : " + rs);
+						
+						while(rs.next()) {
+							String calendar_table = rs.getString("calendar_table");
+							String calendar_day = rs.getString("calendar_day");
+							String calendar_time = rs.getString("calendar_time");
+							
+							System.out.println("calendar_day :" + calendar_day);
+							
+							CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
+							ccc.add(cdto);
+						}
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}finally {
+						JdbcUtil.close(rs);
+						JdbcUtil.close(pstmt);
+						JdbcUtil.close(conn);
+					}
+					return ccc;
+					
+				}
+				public ArrayList<CDto> t3_fifth_calendar() {
+					ArrayList<CDto> ccc = new ArrayList<CDto>();
+					Connection conn = null;
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+							
+					try {
+						conn = getConnection();
+						
+						String query = "SELECT * FROM calendar "
+								+ "WHERE calendar_table='Table No.3' and calendar_day='fifth' and calendar_time "
+								+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.3') "
+								+ "ORDER BY calendar_time ASC";
+						pstmt = conn.prepareStatement(query);
+						rs = pstmt.executeQuery();
+						System.out.println("calendar() rs : " + rs);
+						
+						while(rs.next()) {
+							String calendar_table = rs.getString("calendar_table");
+							String calendar_day = rs.getString("calendar_day");
+							String calendar_time = rs.getString("calendar_time");
+							
+							System.out.println("calendar_day :" + calendar_day);
+							
+							CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
+							ccc.add(cdto);
+						}
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}finally {
+						JdbcUtil.close(rs);
+						JdbcUtil.close(pstmt);
+						JdbcUtil.close(conn);
+					}
+					return ccc;
+					
+				}
+				public ArrayList<CDto> t3_sixth_calendar() {
+					ArrayList<CDto> ccc = new ArrayList<CDto>();
+					Connection conn = null;
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+							
+					try {
+						conn = getConnection();
+						
+						String query = "SELECT * FROM calendar "
+								+ "WHERE calendar_table='Table No.3' and calendar_day='sixth' and calendar_time "
+								+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.3') "
+								+ "ORDER BY calendar_time ASC";
+						pstmt = conn.prepareStatement(query);
+						rs = pstmt.executeQuery();
+						System.out.println("calendar() rs : " + rs);
+						
+						while(rs.next()) {
+							String calendar_table = rs.getString("calendar_table");
+							String calendar_day = rs.getString("calendar_day");
+							String calendar_time = rs.getString("calendar_time");
+							
+							System.out.println("calendar_day :" + calendar_day);
+							
+							CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
+							ccc.add(cdto);
+						}
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}finally {
+						JdbcUtil.close(rs);
+						JdbcUtil.close(pstmt);
+						JdbcUtil.close(conn);
+					}
+					return ccc;
+					
+				}
+				// Table No.4 today ~ sixth all time
+				public ArrayList<CDto> t4_today_calendar() {
+					ArrayList<CDto> ccc = new ArrayList<CDto>();
+					Connection conn = null;
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+							
+					try {
+						conn = getConnection();
+						
+						String query = "SELECT * FROM calendar "
+								+ "WHERE calendar_table='Table No.4' and calendar_day='today' and calendar_time "
+								+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.4') "
+								+ "ORDER BY calendar_time ASC";
+						pstmt = conn.prepareStatement(query);
+						rs = pstmt.executeQuery();
+						System.out.println("calendar() rs : " + rs);
+						
+						while(rs.next()) {
+							String calendar_table = rs.getString("calendar_table");
+							String calendar_day = rs.getString("calendar_day");
+							String calendar_time = rs.getString("calendar_time");
+							
+							System.out.println("calendar_day :" + calendar_day);
+							
+							CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
+							ccc.add(cdto);
+						}
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}finally {
+						JdbcUtil.close(rs);
+						JdbcUtil.close(pstmt);
+						JdbcUtil.close(conn);
+					}
+					return ccc;
+					
+				}
+				public ArrayList<CDto> t4_manana_calendar() {
+					ArrayList<CDto> ccc = new ArrayList<CDto>();
+					Connection conn = null;
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+							
+					try {
+						conn = getConnection();
+						
+						String query = "SELECT * FROM calendar "
+								+ "WHERE calendar_table='Table No.4' and calendar_day='manana' and calendar_time "
+								+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.4') "
+								+ "ORDER BY calendar_time ASC";
+						pstmt = conn.prepareStatement(query);
+						rs = pstmt.executeQuery();
+						System.out.println("calendar() rs : " + rs);
+						
+						while(rs.next()) {
+							String calendar_table = rs.getString("calendar_table");
+							String calendar_day = rs.getString("calendar_day");
+							String calendar_time = rs.getString("calendar_time");
+							
+							System.out.println("calendar_day :" + calendar_day);
+							
+							CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
+							ccc.add(cdto);
+						}
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}finally {
+						JdbcUtil.close(rs);
+						JdbcUtil.close(pstmt);
+						JdbcUtil.close(conn);
+					}
+					return ccc;
+					
+				}
+				public ArrayList<CDto> t4_third_calendar() {
+					ArrayList<CDto> ccc = new ArrayList<CDto>();
+					Connection conn = null;
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+							
+					try {
+						conn = getConnection();
+						
+						String query = "SELECT * FROM calendar "
+								+ "WHERE calendar_table='Table No.4' and calendar_day='third' and calendar_time "
+								+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.4') "
+								+ "ORDER BY calendar_time ASC";
+						pstmt = conn.prepareStatement(query);
+						rs = pstmt.executeQuery();
+						System.out.println("calendar() rs : " + rs);
+						
+						while(rs.next()) {
+							String calendar_table = rs.getString("calendar_table");
+							String calendar_day = rs.getString("calendar_day");
+							String calendar_time = rs.getString("calendar_time");
+							
+							System.out.println("calendar_day :" + calendar_day);
+							
+							CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
+							ccc.add(cdto);
+						}
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}finally {
+						JdbcUtil.close(rs);
+						JdbcUtil.close(pstmt);
+						JdbcUtil.close(conn);
+					}
+					return ccc;
+					
+				}
+				public ArrayList<CDto> t4_fourth_calendar() {
+					ArrayList<CDto> ccc = new ArrayList<CDto>();
+					Connection conn = null;
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+							
+					try {
+						conn = getConnection();
+						
+						String query = "SELECT * FROM calendar "
+								+ "WHERE calendar_table='Table No.4' and calendar_day='fourth' and calendar_time "
+								+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.4') "
+								+ "ORDER BY calendar_time ASC";
+						pstmt = conn.prepareStatement(query);
+						rs = pstmt.executeQuery();
+						System.out.println("calendar() rs : " + rs);
+						
+						while(rs.next()) {
+							String calendar_table = rs.getString("calendar_table");
+							String calendar_day = rs.getString("calendar_day");
+							String calendar_time = rs.getString("calendar_time");
+							
+							System.out.println("calendar_day :" + calendar_day);
+							
+							CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
+							ccc.add(cdto);
+						}
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}finally {
+						JdbcUtil.close(rs);
+						JdbcUtil.close(pstmt);
+						JdbcUtil.close(conn);
+					}
+					return ccc;
+					
+				}
+				public ArrayList<CDto> t4_fifth_calendar() {
+					ArrayList<CDto> ccc = new ArrayList<CDto>();
+					Connection conn = null;
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+							
+					try {
+						conn = getConnection();
+						
+						String query = "SELECT * FROM calendar "
+								+ "WHERE calendar_table='Table No.4' and calendar_day='fifth' and calendar_time "
+								+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.4') "
+								+ "ORDER BY calendar_time ASC";
+						pstmt = conn.prepareStatement(query);
+						rs = pstmt.executeQuery();
+						System.out.println("calendar() rs : " + rs);
+						
+						while(rs.next()) {
+							String calendar_table = rs.getString("calendar_table");
+							String calendar_day = rs.getString("calendar_day");
+							String calendar_time = rs.getString("calendar_time");
+							
+							System.out.println("calendar_day :" + calendar_day);
+							
+							CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
+							ccc.add(cdto);
+						}
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}finally {
+						JdbcUtil.close(rs);
+						JdbcUtil.close(pstmt);
+						JdbcUtil.close(conn);
+					}
+					return ccc;
+					
+				}
+				public ArrayList<CDto> t4_sixth_calendar() {
+					ArrayList<CDto> ccc = new ArrayList<CDto>();
+					Connection conn = null;
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+							
+					try {
+						conn = getConnection();
+						
+						String query = "SELECT * FROM calendar "
+								+ "WHERE calendar_table='Table No.4' and calendar_day='sixth' and calendar_time "
+								+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.4') "
+								+ "ORDER BY calendar_time ASC";
+						pstmt = conn.prepareStatement(query);
+						rs = pstmt.executeQuery();
+						System.out.println("calendar() rs : " + rs);
+						
+						while(rs.next()) {
+							String calendar_table = rs.getString("calendar_table");
+							String calendar_day = rs.getString("calendar_day");
+							String calendar_time = rs.getString("calendar_time");
+							
+							System.out.println("calendar_day :" + calendar_day);
+							
+							CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
+							ccc.add(cdto);
+						}
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}finally {
+						JdbcUtil.close(rs);
+						JdbcUtil.close(pstmt);
+						JdbcUtil.close(conn);
+					}
+					return ccc;
+					
+				}
+				// Table No.5 today ~ sixth all time
+				public ArrayList<CDto> t5_today_calendar() {
+					ArrayList<CDto> ccc = new ArrayList<CDto>();
+					Connection conn = null;
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+							
+					try {
+						conn = getConnection();
+						
+						String query = "SELECT * FROM calendar "
+								+ "WHERE calendar_table='Table No.5' and calendar_day='today' and calendar_time "
+								+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.5') "
+								+ "ORDER BY calendar_time ASC";
+						pstmt = conn.prepareStatement(query);
+						rs = pstmt.executeQuery();
+						System.out.println("calendar() rs : " + rs);
+						
+						while(rs.next()) {
+							String calendar_table = rs.getString("calendar_table");
+							String calendar_day = rs.getString("calendar_day");
+							String calendar_time = rs.getString("calendar_time");
+							
+							System.out.println("calendar_day :" + calendar_day);
+							
+							CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
+							ccc.add(cdto);
+						}
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}finally {
+						JdbcUtil.close(rs);
+						JdbcUtil.close(pstmt);
+						JdbcUtil.close(conn);
+					}
+					return ccc;
+					
+				}
+				public ArrayList<CDto> t5_manana_calendar() {
+					ArrayList<CDto> ccc = new ArrayList<CDto>();
+					Connection conn = null;
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+							
+					try {
+						conn = getConnection();
+						
+						String query = "SELECT * FROM calendar "
+								+ "WHERE calendar_table='Table No.5' and calendar_day='manana' and calendar_time "
+								+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.5') "
+								+ "ORDER BY calendar_time ASC";
+						pstmt = conn.prepareStatement(query);
+						rs = pstmt.executeQuery();
+						System.out.println("calendar() rs : " + rs);
+						
+						while(rs.next()) {
+							String calendar_table = rs.getString("calendar_table");
+							String calendar_day = rs.getString("calendar_day");
+							String calendar_time = rs.getString("calendar_time");
+							
+							System.out.println("calendar_day :" + calendar_day);
+							
+							CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
+							ccc.add(cdto);
+						}
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}finally {
+						JdbcUtil.close(rs);
+						JdbcUtil.close(pstmt);
+						JdbcUtil.close(conn);
+					}
+					return ccc;
+					
+				}
+				public ArrayList<CDto> t5_third_calendar() {
+					ArrayList<CDto> ccc = new ArrayList<CDto>();
+					Connection conn = null;
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+							
+					try {
+						conn = getConnection();
+						
+						String query = "SELECT * FROM calendar "
+								+ "WHERE calendar_table='Table No.5' and calendar_day='third' and calendar_time "
+								+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.5') "
+								+ "ORDER BY calendar_time ASC";
+						pstmt = conn.prepareStatement(query);
+						rs = pstmt.executeQuery();
+						System.out.println("calendar() rs : " + rs);
+						
+						while(rs.next()) {
+							String calendar_table = rs.getString("calendar_table");
+							String calendar_day = rs.getString("calendar_day");
+							String calendar_time = rs.getString("calendar_time");
+							
+							System.out.println("calendar_day :" + calendar_day);
+							
+							CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
+							ccc.add(cdto);
+						}
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}finally {
+						JdbcUtil.close(rs);
+						JdbcUtil.close(pstmt);
+						JdbcUtil.close(conn);
+					}
+					return ccc;
+					
+				}
+				public ArrayList<CDto> t5_fourth_calendar() {
+					ArrayList<CDto> ccc = new ArrayList<CDto>();
+					Connection conn = null;
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+							
+					try {
+						conn = getConnection();
+						
+						String query = "SELECT * FROM calendar "
+								+ "WHERE calendar_table='Table No.5' and calendar_day='fourth' and calendar_time "
+								+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.5') "
+								+ "ORDER BY calendar_time ASC";
+						pstmt = conn.prepareStatement(query);
+						rs = pstmt.executeQuery();
+						System.out.println("calendar() rs : " + rs);
+						
+						while(rs.next()) {
+							String calendar_table = rs.getString("calendar_table");
+							String calendar_day = rs.getString("calendar_day");
+							String calendar_time = rs.getString("calendar_time");
+							
+							System.out.println("calendar_day :" + calendar_day);
+							
+							CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
+							ccc.add(cdto);
+						}
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}finally {
+						JdbcUtil.close(rs);
+						JdbcUtil.close(pstmt);
+						JdbcUtil.close(conn);
+					}
+					return ccc;
+					
+				}
+				public ArrayList<CDto> t5_fifth_calendar() {
+					ArrayList<CDto> ccc = new ArrayList<CDto>();
+					Connection conn = null;
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+							
+					try {
+						conn = getConnection();
+						
+						String query = "SELECT * FROM calendar "
+								+ "WHERE calendar_table='Table No.5' and calendar_day='fifth' and calendar_time "
+								+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.5') "
+								+ "ORDER BY calendar_time ASC";
+						pstmt = conn.prepareStatement(query);
+						rs = pstmt.executeQuery();
+						System.out.println("calendar() rs : " + rs);
+						
+						while(rs.next()) {
+							String calendar_table = rs.getString("calendar_table");
+							String calendar_day = rs.getString("calendar_day");
+							String calendar_time = rs.getString("calendar_time");
+							
+							System.out.println("calendar_day :" + calendar_day);
+							
+							CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
+							ccc.add(cdto);
+						}
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}finally {
+						JdbcUtil.close(rs);
+						JdbcUtil.close(pstmt);
+						JdbcUtil.close(conn);
+					}
+					return ccc;
+					
+				}
+				public ArrayList<CDto> t5_sixth_calendar() {
+					ArrayList<CDto> ccc = new ArrayList<CDto>();
+					Connection conn = null;
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+							
+					try {
+						conn = getConnection();
+						
+						String query = "SELECT * FROM calendar "
+								+ "WHERE calendar_table='Table No.5' and calendar_day='sixth' and calendar_time "
+								+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.5') "
+								+ "ORDER BY calendar_time ASC";
+						pstmt = conn.prepareStatement(query);
+						rs = pstmt.executeQuery();
+						System.out.println("calendar() rs : " + rs);
+						
+						while(rs.next()) {
+							String calendar_table = rs.getString("calendar_table");
+							String calendar_day = rs.getString("calendar_day");
+							String calendar_time = rs.getString("calendar_time");
+							
+							System.out.println("calendar_day :" + calendar_day);
+							
+							CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
+							ccc.add(cdto);
+						}
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}finally {
+						JdbcUtil.close(rs);
+						JdbcUtil.close(pstmt);
+						JdbcUtil.close(conn);
+					}
+					return ccc;
+					
+				}
+				// Table No.6 today ~ sixth all time
+				public ArrayList<CDto> t6_today_calendar() {
+					ArrayList<CDto> ccc = new ArrayList<CDto>();
+					Connection conn = null;
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+							
+					try {
+						conn = getConnection();
+						
+						String query = "SELECT * FROM calendar "
+								+ "WHERE calendar_table='Table No.6' and calendar_day='today' and calendar_time "
+								+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.6') "
+								+ "ORDER BY calendar_time ASC";
+						pstmt = conn.prepareStatement(query);
+						rs = pstmt.executeQuery();
+						System.out.println("calendar() rs : " + rs);
+						
+						while(rs.next()) {
+							String calendar_table = rs.getString("calendar_table");
+							String calendar_day = rs.getString("calendar_day");
+							String calendar_time = rs.getString("calendar_time");
+							
+							System.out.println("calendar_day :" + calendar_day);
+							
+							CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
+							ccc.add(cdto);
+						}
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}finally {
+						JdbcUtil.close(rs);
+						JdbcUtil.close(pstmt);
+						JdbcUtil.close(conn);
+					}
+					return ccc;
+					
+				}
+				public ArrayList<CDto> t6_manana_calendar() {
+					ArrayList<CDto> ccc = new ArrayList<CDto>();
+					Connection conn = null;
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+							
+					try {
+						conn = getConnection();
+						
+						String query = "SELECT * FROM calendar "
+								+ "WHERE calendar_table='Table No.6' and calendar_day='manana' and calendar_time "
+								+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.6') "
+								+ "ORDER BY calendar_time ASC";
+						pstmt = conn.prepareStatement(query);
+						rs = pstmt.executeQuery();
+						System.out.println("calendar() rs : " + rs);
+						
+						while(rs.next()) {
+							String calendar_table = rs.getString("calendar_table");
+							String calendar_day = rs.getString("calendar_day");
+							String calendar_time = rs.getString("calendar_time");
+							
+							System.out.println("calendar_day :" + calendar_day);
+							
+							CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
+							ccc.add(cdto);
+						}
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}finally {
+						JdbcUtil.close(rs);
+						JdbcUtil.close(pstmt);
+						JdbcUtil.close(conn);
+					}
+					return ccc;
+					
+				}
+				public ArrayList<CDto> t6_third_calendar() {
+					ArrayList<CDto> ccc = new ArrayList<CDto>();
+					Connection conn = null;
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+							
+					try {
+						conn = getConnection();
+						
+						String query = "SELECT * FROM calendar "
+								+ "WHERE calendar_table='Table No.6' and calendar_day='third' and calendar_time "
+								+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.6') "
+								+ "ORDER BY calendar_time ASC";
+						pstmt = conn.prepareStatement(query);
+						rs = pstmt.executeQuery();
+						System.out.println("calendar() rs : " + rs);
+						
+						while(rs.next()) {
+							String calendar_table = rs.getString("calendar_table");
+							String calendar_day = rs.getString("calendar_day");
+							String calendar_time = rs.getString("calendar_time");
+							
+							System.out.println("calendar_day :" + calendar_day);
+							
+							CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
+							ccc.add(cdto);
+						}
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}finally {
+						JdbcUtil.close(rs);
+						JdbcUtil.close(pstmt);
+						JdbcUtil.close(conn);
+					}
+					return ccc;
+					
+				}
+				public ArrayList<CDto> t6_fourth_calendar() {
+					ArrayList<CDto> ccc = new ArrayList<CDto>();
+					Connection conn = null;
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+							
+					try {
+						conn = getConnection();
+						
+						String query = "SELECT * FROM calendar "
+								+ "WHERE calendar_table='Table No.6' and calendar_day='fourth' and calendar_time "
+								+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.6') "
+								+ "ORDER BY calendar_time ASC";
+						pstmt = conn.prepareStatement(query);
+						rs = pstmt.executeQuery();
+						System.out.println("calendar() rs : " + rs);
+						
+						while(rs.next()) {
+							String calendar_table = rs.getString("calendar_table");
+							String calendar_day = rs.getString("calendar_day");
+							String calendar_time = rs.getString("calendar_time");
+							
+							System.out.println("calendar_day :" + calendar_day);
+							
+							CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
+							ccc.add(cdto);
+						}
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}finally {
+						JdbcUtil.close(rs);
+						JdbcUtil.close(pstmt);
+						JdbcUtil.close(conn);
+					}
+					return ccc;
+					
+				}
+				public ArrayList<CDto> t6_fifth_calendar() {
+					ArrayList<CDto> ccc = new ArrayList<CDto>();
+					Connection conn = null;
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+							
+					try {
+						conn = getConnection();
+						
+						String query = "SELECT * FROM calendar "
+								+ "WHERE calendar_table='Table No.6' and calendar_day='fifth' and calendar_time "
+								+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.6') "
+								+ "ORDER BY calendar_time ASC";
+						pstmt = conn.prepareStatement(query);
+						rs = pstmt.executeQuery();
+						System.out.println("calendar() rs : " + rs);
+						
+						while(rs.next()) {
+							String calendar_table = rs.getString("calendar_table");
+							String calendar_day = rs.getString("calendar_day");
+							String calendar_time = rs.getString("calendar_time");
+							
+							System.out.println("calendar_day :" + calendar_day);
+							
+							CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
+							ccc.add(cdto);
+						}
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}finally {
+						JdbcUtil.close(rs);
+						JdbcUtil.close(pstmt);
+						JdbcUtil.close(conn);
+					}
+					return ccc;
+					
+				}
+				public ArrayList<CDto> t6_sixth_calendar() {
+					ArrayList<CDto> ccc = new ArrayList<CDto>();
+					Connection conn = null;
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+							
+					try {
+						conn = getConnection();
+						
+						String query = "SELECT * FROM calendar "
+								+ "WHERE calendar_table='Table No.6' and calendar_day='sixth' and calendar_time "
+								+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.6') "
+								+ "ORDER BY calendar_time ASC";
+						pstmt = conn.prepareStatement(query);
+						rs = pstmt.executeQuery();
+						System.out.println("calendar() rs : " + rs);
+						
+						while(rs.next()) {
+							String calendar_table = rs.getString("calendar_table");
+							String calendar_day = rs.getString("calendar_day");
+							String calendar_time = rs.getString("calendar_time");
+							
+							System.out.println("calendar_day :" + calendar_day);
+							
+							CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
+							ccc.add(cdto);
+						}
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}finally {
+						JdbcUtil.close(rs);
+						JdbcUtil.close(pstmt);
+						JdbcUtil.close(conn);
+					}
+					return ccc;
+					
+				}
+				// Table No.7 today ~ sixth all time
+				public ArrayList<CDto> t7_today_calendar() {
+					ArrayList<CDto> ccc = new ArrayList<CDto>();
+					Connection conn = null;
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+							
+					try {
+						conn = getConnection();
+						
+						String query = "SELECT * FROM calendar "
+								+ "WHERE calendar_table='Table No.7' and calendar_day='today' and calendar_time "
+								+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.7') "
+								+ "ORDER BY calendar_time ASC";
+						pstmt = conn.prepareStatement(query);
+						rs = pstmt.executeQuery();
+						System.out.println("calendar() rs : " + rs);
+						
+						while(rs.next()) {
+							String calendar_table = rs.getString("calendar_table");
+							String calendar_day = rs.getString("calendar_day");
+							String calendar_time = rs.getString("calendar_time");
+							
+							System.out.println("calendar_day :" + calendar_day);
+							
+							CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
+							ccc.add(cdto);
+						}
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}finally {
+						JdbcUtil.close(rs);
+						JdbcUtil.close(pstmt);
+						JdbcUtil.close(conn);
+					}
+					return ccc;
+					
+				}
+				public ArrayList<CDto> t7_manana_calendar() {
+					ArrayList<CDto> ccc = new ArrayList<CDto>();
+					Connection conn = null;
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+							
+					try {
+						conn = getConnection();
+						
+						String query = "SELECT * FROM calendar "
+								+ "WHERE calendar_table='Table No.7' and calendar_day='manana' and calendar_time "
+								+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.7') "
+								+ "ORDER BY calendar_time ASC";
+						pstmt = conn.prepareStatement(query);
+						rs = pstmt.executeQuery();
+						System.out.println("calendar() rs : " + rs);
+						
+						while(rs.next()) {
+							String calendar_table = rs.getString("calendar_table");
+							String calendar_day = rs.getString("calendar_day");
+							String calendar_time = rs.getString("calendar_time");
+							
+							System.out.println("calendar_day :" + calendar_day);
+							
+							CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
+							ccc.add(cdto);
+						}
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}finally {
+						JdbcUtil.close(rs);
+						JdbcUtil.close(pstmt);
+						JdbcUtil.close(conn);
+					}
+					return ccc;
+					
+				}
+				public ArrayList<CDto> t7_third_calendar() {
+					ArrayList<CDto> ccc = new ArrayList<CDto>();
+					Connection conn = null;
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+							
+					try {
+						conn = getConnection();
+						
+						String query = "SELECT * FROM calendar "
+								+ "WHERE calendar_table='Table No.7' and calendar_day='third' and calendar_time "
+								+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.7') "
+								+ "ORDER BY calendar_time ASC";
+						pstmt = conn.prepareStatement(query);
+						rs = pstmt.executeQuery();
+						System.out.println("calendar() rs : " + rs);
+						
+						while(rs.next()) {
+							String calendar_table = rs.getString("calendar_table");
+							String calendar_day = rs.getString("calendar_day");
+							String calendar_time = rs.getString("calendar_time");
+							
+							System.out.println("calendar_day :" + calendar_day);
+							
+							CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
+							ccc.add(cdto);
+						}
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}finally {
+						JdbcUtil.close(rs);
+						JdbcUtil.close(pstmt);
+						JdbcUtil.close(conn);
+					}
+					return ccc;
+					
+				}
+				public ArrayList<CDto> t7_fourth_calendar() {
+					ArrayList<CDto> ccc = new ArrayList<CDto>();
+					Connection conn = null;
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+							
+					try {
+						conn = getConnection();
+						
+						String query = "SELECT * FROM calendar "
+								+ "WHERE calendar_table='Table No.7' and calendar_day='fourth' and calendar_time "
+								+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.7') "
+								+ "ORDER BY calendar_time ASC";
+						pstmt = conn.prepareStatement(query);
+						rs = pstmt.executeQuery();
+						System.out.println("calendar() rs : " + rs);
+						
+						while(rs.next()) {
+							String calendar_table = rs.getString("calendar_table");
+							String calendar_day = rs.getString("calendar_day");
+							String calendar_time = rs.getString("calendar_time");
+							
+							System.out.println("calendar_day :" + calendar_day);
+							
+							CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
+							ccc.add(cdto);
+						}
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}finally {
+						JdbcUtil.close(rs);
+						JdbcUtil.close(pstmt);
+						JdbcUtil.close(conn);
+					}
+					return ccc;
+					
+				}
+				public ArrayList<CDto> t7_fifth_calendar() {
+					ArrayList<CDto> ccc = new ArrayList<CDto>();
+					Connection conn = null;
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+							
+					try {
+						conn = getConnection();
+						
+						String query = "SELECT * FROM calendar "
+								+ "WHERE calendar_table='Table No.7' and calendar_day='fifth' and calendar_time "
+								+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.7') "
+								+ "ORDER BY calendar_time ASC";
+						pstmt = conn.prepareStatement(query);
+						rs = pstmt.executeQuery();
+						System.out.println("calendar() rs : " + rs);
+						
+						while(rs.next()) {
+							String calendar_table = rs.getString("calendar_table");
+							String calendar_day = rs.getString("calendar_day");
+							String calendar_time = rs.getString("calendar_time");
+							
+							System.out.println("calendar_day :" + calendar_day);
+							
+							CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
+							ccc.add(cdto);
+						}
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}finally {
+						JdbcUtil.close(rs);
+						JdbcUtil.close(pstmt);
+						JdbcUtil.close(conn);
+					}
+					return ccc;
+					
+				}
+				public ArrayList<CDto> t7_sixth_calendar() {
+					ArrayList<CDto> ccc = new ArrayList<CDto>();
+					Connection conn = null;
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+							
+					try {
+						conn = getConnection();
+						
+						String query = "SELECT * FROM calendar "
+								+ "WHERE calendar_table='Table No.7' and calendar_day='sixth' and calendar_time "
+								+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.7') "
+								+ "ORDER BY calendar_time ASC";
+						pstmt = conn.prepareStatement(query);
+						rs = pstmt.executeQuery();
+						System.out.println("calendar() rs : " + rs);
+						
+						while(rs.next()) {
+							String calendar_table = rs.getString("calendar_table");
+							String calendar_day = rs.getString("calendar_day");
+							String calendar_time = rs.getString("calendar_time");
+							
+							System.out.println("calendar_day :" + calendar_day);
+							
+							CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
+							ccc.add(cdto);
+						}
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}finally {
+						JdbcUtil.close(rs);
+						JdbcUtil.close(pstmt);
+						JdbcUtil.close(conn);
+					}
+					return ccc;
+					
+				}
+				// Table No.8 today ~ sixth all time
+				public ArrayList<CDto> t8_today_calendar() {
+					ArrayList<CDto> ccc = new ArrayList<CDto>();
+					Connection conn = null;
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+							
+					try {
+						conn = getConnection();
+						
+						String query = "SELECT * FROM calendar "
+								+ "WHERE calendar_table='Table No.8' and calendar_day='today' and calendar_time "
+								+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.8') "
+								+ "ORDER BY calendar_time ASC";
+						pstmt = conn.prepareStatement(query);
+						rs = pstmt.executeQuery();
+						System.out.println("calendar() rs : " + rs);
+						
+						while(rs.next()) {
+							String calendar_table = rs.getString("calendar_table");
+							String calendar_day = rs.getString("calendar_day");
+							String calendar_time = rs.getString("calendar_time");
+							
+							System.out.println("calendar_day :" + calendar_day);
+							
+							CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
+							ccc.add(cdto);
+						}
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}finally {
+						JdbcUtil.close(rs);
+						JdbcUtil.close(pstmt);
+						JdbcUtil.close(conn);
+					}
+					return ccc;
+					
+				}
+				public ArrayList<CDto> t8_manana_calendar() {
+					ArrayList<CDto> ccc = new ArrayList<CDto>();
+					Connection conn = null;
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+							
+					try {
+						conn = getConnection();
+						
+						String query = "SELECT * FROM calendar "
+								+ "WHERE calendar_table='Table No.8' and calendar_day='manana' and calendar_time "
+								+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.8') "
+								+ "ORDER BY calendar_time ASC";
+						pstmt = conn.prepareStatement(query);
+						rs = pstmt.executeQuery();
+						System.out.println("calendar() rs : " + rs);
+						
+						while(rs.next()) {
+							String calendar_table = rs.getString("calendar_table");
+							String calendar_day = rs.getString("calendar_day");
+							String calendar_time = rs.getString("calendar_time");
+							
+							System.out.println("calendar_day :" + calendar_day);
+							
+							CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
+							ccc.add(cdto);
+						}
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}finally {
+						JdbcUtil.close(rs);
+						JdbcUtil.close(pstmt);
+						JdbcUtil.close(conn);
+					}
+					return ccc;
+					
+				}
+				public ArrayList<CDto> t8_third_calendar() {
+					ArrayList<CDto> ccc = new ArrayList<CDto>();
+					Connection conn = null;
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+							
+					try {
+						conn = getConnection();
+						
+						String query = "SELECT * FROM calendar "
+								+ "WHERE calendar_table='Table No.8' and calendar_day='third' and calendar_time "
+								+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.8') "
+								+ "ORDER BY calendar_time ASC";
+						pstmt = conn.prepareStatement(query);
+						rs = pstmt.executeQuery();
+						System.out.println("calendar() rs : " + rs);
+						
+						while(rs.next()) {
+							String calendar_table = rs.getString("calendar_table");
+							String calendar_day = rs.getString("calendar_day");
+							String calendar_time = rs.getString("calendar_time");
+							
+							System.out.println("calendar_day :" + calendar_day);
+							
+							CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
+							ccc.add(cdto);
+						}
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}finally {
+						JdbcUtil.close(rs);
+						JdbcUtil.close(pstmt);
+						JdbcUtil.close(conn);
+					}
+					return ccc;
+					
+				}
+				public ArrayList<CDto> t8_fourth_calendar() {
+					ArrayList<CDto> ccc = new ArrayList<CDto>();
+					Connection conn = null;
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+							
+					try {
+						conn = getConnection();
+						
+						String query = "SELECT * FROM calendar "
+								+ "WHERE calendar_table='Table No.8' and calendar_day='fourth' and calendar_time "
+								+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.8') "
+								+ "ORDER BY calendar_time ASC";
+						pstmt = conn.prepareStatement(query);
+						rs = pstmt.executeQuery();
+						System.out.println("calendar() rs : " + rs);
+						
+						while(rs.next()) {
+							String calendar_table = rs.getString("calendar_table");
+							String calendar_day = rs.getString("calendar_day");
+							String calendar_time = rs.getString("calendar_time");
+							
+							System.out.println("calendar_day :" + calendar_day);
+							
+							CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
+							ccc.add(cdto);
+						}
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}finally {
+						JdbcUtil.close(rs);
+						JdbcUtil.close(pstmt);
+						JdbcUtil.close(conn);
+					}
+					return ccc;
+					
+				}
+				public ArrayList<CDto> t8_fifth_calendar() {
+					ArrayList<CDto> ccc = new ArrayList<CDto>();
+					Connection conn = null;
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+							
+					try {
+						conn = getConnection();
+						
+						String query = "SELECT * FROM calendar "
+								+ "WHERE calendar_table='Table No.8' and calendar_day='fifth' and calendar_time "
+								+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.8') "
+								+ "ORDER BY calendar_time ASC";
+						pstmt = conn.prepareStatement(query);
+						rs = pstmt.executeQuery();
+						System.out.println("calendar() rs : " + rs);
+						
+						while(rs.next()) {
+							String calendar_table = rs.getString("calendar_table");
+							String calendar_day = rs.getString("calendar_day");
+							String calendar_time = rs.getString("calendar_time");
+							
+							System.out.println("calendar_day :" + calendar_day);
+							
+							CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
+							ccc.add(cdto);
+						}
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}finally {
+						JdbcUtil.close(rs);
+						JdbcUtil.close(pstmt);
+						JdbcUtil.close(conn);
+					}
+					return ccc;
+					
+				}
+				public ArrayList<CDto> t8_sixth_calendar() {
+					ArrayList<CDto> ccc = new ArrayList<CDto>();
+					Connection conn = null;
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+							
+					try {
+						conn = getConnection();
+						
+						String query = "SELECT * FROM calendar "
+								+ "WHERE calendar_table='Table No.8' and calendar_day='sixth' and calendar_time "
+								+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.8') "
+								+ "ORDER BY calendar_time ASC";
+						pstmt = conn.prepareStatement(query);
+						rs = pstmt.executeQuery();
+						System.out.println("calendar() rs : " + rs);
+						
+						while(rs.next()) {
+							String calendar_table = rs.getString("calendar_table");
+							String calendar_day = rs.getString("calendar_day");
+							String calendar_time = rs.getString("calendar_time");
+							
+							System.out.println("calendar_day :" + calendar_day);
+							
+							CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
+							ccc.add(cdto);
+						}
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}finally {
+						JdbcUtil.close(rs);
+						JdbcUtil.close(pstmt);
+						JdbcUtil.close(conn);
+					}
+					return ccc;
+					
+				}
+				// Table No.9 today ~ sixth all time
+				public ArrayList<CDto> t9_today_calendar() {
+					ArrayList<CDto> ccc = new ArrayList<CDto>();
+					Connection conn = null;
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+							
+					try {
+						conn = getConnection();
+						
+						String query = "SELECT * FROM calendar "
+								+ "WHERE calendar_table='Table No.9' and calendar_day='today' and calendar_time "
+								+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.9') "
+								+ "ORDER BY calendar_time ASC";
+						pstmt = conn.prepareStatement(query);
+						rs = pstmt.executeQuery();
+						System.out.println("calendar() rs : " + rs);
+						
+						while(rs.next()) {
+							String calendar_table = rs.getString("calendar_table");
+							String calendar_day = rs.getString("calendar_day");
+							String calendar_time = rs.getString("calendar_time");
+							
+							System.out.println("calendar_day :" + calendar_day);
+							
+							CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
+							ccc.add(cdto);
+						}
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}finally {
+						JdbcUtil.close(rs);
+						JdbcUtil.close(pstmt);
+						JdbcUtil.close(conn);
+					}
+					return ccc;
+					
+				}
+				public ArrayList<CDto> t9_manana_calendar() {
+					ArrayList<CDto> ccc = new ArrayList<CDto>();
+					Connection conn = null;
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+							
+					try {
+						conn = getConnection();
+						
+						String query = "SELECT * FROM calendar "
+								+ "WHERE calendar_table='Table No.9' and calendar_day='manana' and calendar_time "
+								+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.9') "
+								+ "ORDER BY calendar_time ASC";
+						pstmt = conn.prepareStatement(query);
+						rs = pstmt.executeQuery();
+						System.out.println("calendar() rs : " + rs);
+						
+						while(rs.next()) {
+							String calendar_table = rs.getString("calendar_table");
+							String calendar_day = rs.getString("calendar_day");
+							String calendar_time = rs.getString("calendar_time");
+							
+							System.out.println("calendar_day :" + calendar_day);
+							
+							CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
+							ccc.add(cdto);
+						}
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}finally {
+						JdbcUtil.close(rs);
+						JdbcUtil.close(pstmt);
+						JdbcUtil.close(conn);
+					}
+					return ccc;
+					
+				}
+				public ArrayList<CDto> t9_third_calendar() {
+					ArrayList<CDto> ccc = new ArrayList<CDto>();
+					Connection conn = null;
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+							
+					try {
+						conn = getConnection();
+						
+						String query = "SELECT * FROM calendar "
+								+ "WHERE calendar_table='Table No.9' and calendar_day='third' and calendar_time "
+								+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.9') "
+								+ "ORDER BY calendar_time ASC";
+						pstmt = conn.prepareStatement(query);
+						rs = pstmt.executeQuery();
+						System.out.println("calendar() rs : " + rs);
+						
+						while(rs.next()) {
+							String calendar_table = rs.getString("calendar_table");
+							String calendar_day = rs.getString("calendar_day");
+							String calendar_time = rs.getString("calendar_time");
+							
+							System.out.println("calendar_day :" + calendar_day);
+							
+							CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
+							ccc.add(cdto);
+						}
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}finally {
+						JdbcUtil.close(rs);
+						JdbcUtil.close(pstmt);
+						JdbcUtil.close(conn);
+					}
+					return ccc;
+					
+				}
+				public ArrayList<CDto> t9_fourth_calendar() {
+					ArrayList<CDto> ccc = new ArrayList<CDto>();
+					Connection conn = null;
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+							
+					try {
+						conn = getConnection();
+						
+						String query = "SELECT * FROM calendar "
+								+ "WHERE calendar_table='Table No.9' and calendar_day='fourth' and calendar_time "
+								+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.9') "
+								+ "ORDER BY calendar_time ASC";
+						pstmt = conn.prepareStatement(query);
+						rs = pstmt.executeQuery();
+						System.out.println("calendar() rs : " + rs);
+						
+						while(rs.next()) {
+							String calendar_table = rs.getString("calendar_table");
+							String calendar_day = rs.getString("calendar_day");
+							String calendar_time = rs.getString("calendar_time");
+							
+							System.out.println("calendar_day :" + calendar_day);
+							
+							CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
+							ccc.add(cdto);
+						}
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}finally {
+						JdbcUtil.close(rs);
+						JdbcUtil.close(pstmt);
+						JdbcUtil.close(conn);
+					}
+					return ccc;
+					
+				}
+				public ArrayList<CDto> t9_fifth_calendar() {
+					ArrayList<CDto> ccc = new ArrayList<CDto>();
+					Connection conn = null;
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+							
+					try {
+						conn = getConnection();
+						
+						String query = "SELECT * FROM calendar "
+								+ "WHERE calendar_table='Table No.9' and calendar_day='fifth' and calendar_time "
+								+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.9') "
+								+ "ORDER BY calendar_time ASC";
+						pstmt = conn.prepareStatement(query);
+						rs = pstmt.executeQuery();
+						System.out.println("calendar() rs : " + rs);
+						
+						while(rs.next()) {
+							String calendar_table = rs.getString("calendar_table");
+							String calendar_day = rs.getString("calendar_day");
+							String calendar_time = rs.getString("calendar_time");
+							
+							System.out.println("calendar_day :" + calendar_day);
+							
+							CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
+							ccc.add(cdto);
+						}
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}finally {
+						JdbcUtil.close(rs);
+						JdbcUtil.close(pstmt);
+						JdbcUtil.close(conn);
+					}
+					return ccc;
+					
+				}
+				public ArrayList<CDto> t9_sixth_calendar() {
+					ArrayList<CDto> ccc = new ArrayList<CDto>();
+					Connection conn = null;
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+							
+					try {
+						conn = getConnection();
+						
+						String query = "SELECT * FROM calendar "
+								+ "WHERE calendar_table='Table No.9' and calendar_day='sixth' and calendar_time "
+								+ "NOT IN (SELECT DISTINCT reserved_time FROM bookup WHERE t_index='Table No.9') "
+								+ "ORDER BY calendar_time ASC";
+						pstmt = conn.prepareStatement(query);
+						rs = pstmt.executeQuery();
+						System.out.println("calendar() rs : " + rs);
+						
+						while(rs.next()) {
+							String calendar_table = rs.getString("calendar_table");
+							String calendar_day = rs.getString("calendar_day");
+							String calendar_time = rs.getString("calendar_time");
+							
+							System.out.println("calendar_day :" + calendar_day);
+							
+							CDto cdto = new CDto(calendar_table, calendar_day, calendar_time);
+							ccc.add(cdto);
+						}
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}finally {
+						JdbcUtil.close(rs);
+						JdbcUtil.close(pstmt);
+						JdbcUtil.close(conn);
+					}
+					return ccc;
+					
+				}
+		
 }

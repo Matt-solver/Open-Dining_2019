@@ -43,10 +43,10 @@ function purchaseListPopupOpen() {
 	window.open(popUrl, "", popOption);
 }
 
-function addCalendar(re_day) {
+function addCalendar(calendarTable, re_day) {
 	 //Attach the parameter from the Calender in index.jsp 
-	var popUrl = "reservation/scheduling.jsp?re_day=" + re_day;
-	var popOption = "top=150, left=650, width=680, height=500, resizable=no, menubar=no, location=no, directoryies=no, resizable=no, toolbar=no, scrollbars=no, status=no;";
+	var popUrl = "reservation/scheduling.jsp?calendarTable=" + calendarTable + "&re_day=" + re_day;
+	var popOption = "top=150, left=650, width=910, height=450, resizable=no, menubar=no, location=no, directoryies=no, resizable=no, toolbar=no, scrollbars=no, status=no;";
 	window.open(popUrl, "", popOption);
 	
 }

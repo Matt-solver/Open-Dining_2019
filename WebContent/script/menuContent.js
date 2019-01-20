@@ -26,7 +26,7 @@
 			}
 			//jQuery('.menuname').val(mnArr[*]);		
 			var mSum = mnArr.reduce(add, 0);
-			var mTot = mnArr.reduce(function(a, b) {return a +' '+ b;});
+			var mTot = mnArr.reduce(function(a, b) {return a +', '+ b;});
 			$('.menuname').val(mTot);
 
 			// total price by reduce() methods

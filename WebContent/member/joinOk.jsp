@@ -10,12 +10,11 @@
 <%
 	dto.setRegJointime(new Timestamp(System.currentTimeMillis()));
 	Dao dao = Dao.getInstance();		// 싱글톤 패턴의 특징 : 클래스로부터 객체를 getInstance()로 가져오는 것
-	System.out.println("aaaaaaaaaa " + dto.getCustomerEmail());
 	if(dao.confirmID(dto.getCustomerEmail()) == Dao.MEMBER_EXISTENT){
 %>
 		<script language="javascript" lang="UTF-8">
 			alert("Existent ID.");
-			history.back();	//다시 회원가입 페이지로 돌려보내는 기능
+			history.back();	// go back joinForm.jsp
 		</script>
 		
 <%

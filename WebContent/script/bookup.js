@@ -25,9 +25,11 @@ function getCookie(c_name)
 	$('.t1').click(function(){
 		var a = $('.t1').val();
 		$('.t_num').val("Table No."+a);
-		$('.ptn').text(a);
-		alert('Selected No.'+a+'table')
-		$('.t1').hide();
+		$('.ptn').text(a);		
+		alert('Selected No.'+a+' table')
+		$('.t2, .t3, .t4, .t5, .t6, .t7, .t8, .t9').hide();
+		$('.table_2, .table_3, .table_4, .table_5, .table_6, .table_7, .table_8, .table_9').hide();
+		$('.table_1').show();
 		
 	});
 	
@@ -35,8 +37,10 @@ function getCookie(c_name)
 		var a = $('.t2').val();
 		$('.t_num').val("Table No."+a);
 		$('.ptn').text(a);
-		alert('Selected No.'+a+'table')
-		$('.t2').hide();
+		alert('Selected No.'+a+' table')
+		$('.t1, .t3, .t4, .t5, .t6, .t7, .t8, .t9').hide();
+		$('.table_2, .table_1, .table_4, .table_5, .table_6, .table_7, .table_8, .table_9').hide();
+		$('.table_2').show();
 
 	});
 	
@@ -44,8 +48,10 @@ function getCookie(c_name)
 		var a = $('.t3').val();
 		$('.t_num').val("Table No."+a);
 		$('.ptn').text(a);
-		alert('Selected No.'+a+'table')
-		$('.t3').hide();
+		alert('Selected No.'+a+' table')
+		$('.t2, .t1, .t4, .t5, .t6, .t7, .t8, .t9').hide();
+		$('.table_2, .table_1, .table_4, .table_5, .table_6, .table_7, .table_8, .table_9').hide();
+		$('.table_3').show();
 
 	});
 	
@@ -53,8 +59,10 @@ function getCookie(c_name)
 		var a = $('.t4').val();
 		$('.t_num').val("Table No."+a);
 		$('.ptn').text(a);
-		alert('Selected No.'+a+'table')
-		$('.t4').hide();
+		alert('Selected No.'+a+' table')
+		$('.t2, .t3, .t1, .t5, .t6, .t7, .t8, .t9').hide();
+		$('.table_2, .table_3, .table_1, .table_5, .table_6, .table_7, .table_8, .table_9').hide();
+		$('.table_4').show();
 
 	});
 	
@@ -62,8 +70,10 @@ function getCookie(c_name)
 		var a = $('.t5').val();
 		$('.t_num').val("Table No."+a);
 		$('.ptn').text(a);
-		alert('Selected No.'+a+'table')
-		$('.t5').hide();
+		alert('Selected No.'+a+' table')
+		$('.t2, .t3, .t4, .t1, .t6, .t7, .t8, .t9').hide();
+		$('.table_2, .table_3, .table_4, .table_1, .table_6, .table_7, .table_8, .table_9').hide();
+		$('.table_5').show();
 
 	});
 	
@@ -71,8 +81,10 @@ function getCookie(c_name)
 		var a = $('.t6').val();
 		$('.t_num').val("Table No."+a);
 		$('.ptn').text(a);
-		alert('Selected No.'+a+'table')
-		$('.t6').hide();
+		alert('Selected No.'+a+' table')
+		$('.t2, .t3, .t4, .t5, .t1, .t7, .t8, .t9').hide();
+		$('.table_2, .table_3, .table_4, .table_5, .table_1, .table_7, .table_8, .table_9').hide();
+		$('.table_6').show();
 
 	});
 	
@@ -80,8 +92,10 @@ function getCookie(c_name)
 		var a = $('.t7').val();
 		$('.t_num').val("Table No."+a);
 		$('.ptn').text(a);
-		alert('Selected No.'+a+'table')
-		$('.t7').hide();
+		alert('Selected No.'+a+' table')
+		$('.t2, .t3, .t4, .t5, .t6, .t1, .t8, .t9').hide();
+		$('.table_2, .table_3, .table_4, .table_5, .table_6, .table_1, .table_8, .table_9').hide();
+		$('.table_7').show();
 
 	});
 	
@@ -89,8 +103,10 @@ function getCookie(c_name)
 		var a = $('.t8').val();
 		$('.t_num').val("Table No."+a);
 		$('.ptn').text(a);
-		alert('Selected No.'+a+'table')
-		$('.t8').hide();
+		alert('Selected No.'+a+' table')
+		$('.t2, .t3, .t4, .t5, .t6, .t7, .t1, .t9').hide();
+		$('.table_2, .table_3, .table_4, .table_5, .table_6, .table_7, .table_1, .table_9').hide();
+		$('.table_8').show();
 
 	});
 	
@@ -98,20 +114,13 @@ function getCookie(c_name)
 		var a = $('.t9').val();
 		$('.t_num').val("Table No."+a);
 		$('.ptn').text(a);
-		alert('Selected No.'+a+'table')
-		$('.t9').hide();
+		alert('Selected No.'+a+' table')
+		$('.t2, .t3, .t4, .t5, .t6, .t7, .t8, .t1').hide();
+		$('.table_2, .table_3, .table_4, .table_5, .table_6, .table_7, .table_8, .table_1').hide();
+		$('.table_9').show();
 
 	});
 	
-	
-	/*
-	 * table show when clicked reserve box 
-	 * 
-	 * */
-	$('#reserve').click(function() {
-		$('.table').show();		
-	});
-
 	/*	input time	*/
 //	$('.time').click(function(){
 //		var a = $('.time').val();
