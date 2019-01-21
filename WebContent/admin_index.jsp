@@ -67,12 +67,11 @@
 	if(session.getAttribute("ValidMem") == null){
 %>
 		<script type="text/javascript">
-			var popUrl = "member/loginForm.jsp";
-			var popOption = "top=150, left=650, width=440, height=360, resizable=no, menubar=no, location=no, directoryies=no, resizable=no, toolbar=no, scrollbars=no, status=no";
-			window.open(popUrl, "", popOption);
+			alert("Invalid connection.");
+			history.go(-1);
 		</script>
 <%
-	}
+	}else if(email.equals(admin)){
 %>
 	<div class="zoomViewport demo" >
 	
@@ -185,23 +184,7 @@
 	%>
 
 		<!--	Bookup Table	   -->
-	<%
-		if (email == null) {
-	%>	
-		
-		<div id="reserve" class="zoomTarget level0" data-duration="800">
-			<span class="apptitle blur">Book Up</span><br /> <br /> 
-			<div style="width: 100%; height: 100%;">
-				<img class="zoomTarget zoomButton "
-					 data-type="next" data-root=".demo" src="img/foodcourt.png" alt="" 
-				style="position:relative; margin-top: -6%; 
-						left:10%; width: 100%; height: 65%" data-duration="800" />									
-			</div>
-		</div>
-		
-	<%
-		} else {
-	%>
+
 		<div id="reserve" class="zoomTarget level0" data-duration="800">
 			<span class="apptitle blur">Book Up</span><br /> <br /> 
 			<div style="width: 100%; height: 100%;">
@@ -288,8 +271,7 @@
 				
 	<%
 		if(email == null ){
-	%>
-	<%		
+		
 		} else if(email.equals(admin)){
 	%>
 			<!-- 	TimePicker View for Administor		-->
@@ -1158,6 +1140,7 @@
 		}else{
 			
 		}
+	
 	%>	
 	
 			</div>

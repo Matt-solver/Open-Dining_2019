@@ -61,7 +61,7 @@
 			<script lang="Javascript">
 			var email = '<%=email%>';
 			alert('Connect into ' + email);
-			opener.parent.location.replace('http://localhost:8181/Project1_KGITBANK/index.do');
+			opener.parent.location.replace('http://localhost:8181/Project_OpenDining_L.H-S/index.do');
 			self.close();
 			</script>
 <%
@@ -69,7 +69,7 @@
 %>
 			<script lang="Javascript">
 			alert('Connect into admin ID');
-			opener.parent.location.replace('http://localhost:8181/Project1_KGITBANK/admin_index.do');
+			opener.parent.location.replace('http://localhost:8181/Project_OpenDining_L.H-S/admin_index.do');
 			self.close();
 			</script>
 <%
@@ -79,6 +79,7 @@
 %>
 			
 <%
+	//Bring back phone number for send massage to Customer
 	dto.setRegJointime((new Timestamp(System.currentTimeMillis())));
 	phone = dao.confirmPhone(dto.getCustomerEmail()).getCustomerPhone();
 	

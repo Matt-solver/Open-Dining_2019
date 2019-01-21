@@ -683,7 +683,6 @@ public class Dao {
 	}
 	
 	public Dto confirmDistance(String email) {
-		int ri = 0;
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -699,9 +698,9 @@ public class Dao {
 			if(rs.next()) {
 				dto = new Dto();
 				dto.setCustomerDistanceInfo((rs.getString("customer_distance_info")));
-				ri = Dao.DISTANCE_EXISTENT;
+				System.out.println(Dao.DISTANCE_EXISTENT); 
 			}else {
-				ri = DISTANCE_NONEXISTENT;
+				System.out.println(DISTANCE_NONEXISTENT); 
 			}
 			
 		} catch (Exception e) {

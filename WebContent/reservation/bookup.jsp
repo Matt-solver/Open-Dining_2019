@@ -373,9 +373,5 @@ if(setEEE[6] == 0) {
 			
 		}
 		
-		for(int i=0; i<=rn; i++) {
-			
-			//System.out.println(hours[i]+"시 "+minutes[i]+"분");	
-		}
 %>    
     
